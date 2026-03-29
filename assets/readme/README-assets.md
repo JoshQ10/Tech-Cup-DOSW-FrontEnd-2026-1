@@ -4,39 +4,11 @@ Guía de referencia de todos los recursos visuales usados en el `README.md` prin
 
 ---
 
-## Estructura de carpetas
-
-```text
-assets/readme/
-├── branding/          # Logos, isotipo y wordmark oficiales
-├── robot/             # Variantes del robot mascota por rol
-├── mockups/           # Capturas de pantalla de las vistas del sistema
-├── flows/             # Diagramas de flujo y navegación
-└── components/        # Fragmentos de UI: botones, tarjetas, tipografía, etc.
-```
-
----
-
-## Reglas de nombres
-
-| Tipo | Convención | Ejemplo |
-|---|---|---|
-| Logo | `logo-[variante].[ext]` | `logo-principal.svg`, `logo-dark.svg` |
-| Robot | `robot-[rol].[ext]` | `robot-jugador.png`, `robot-capitan.png` |
-| Mockup | `mockup-[nombre-vista].[ext]` | `mockup-login.webp`, `mockup-tabla.webp` |
-| Flujo | `flow-[nombre].[ext]` | `flow-registro.png` |
-| Componente | `component-[nombre].[ext]` | `component-paleta.png` |
-
-> Usa siempre **kebab-case** (minúsculas con guiones). Sin espacios, sin acentos, sin mayúsculas.
-
----
 
 ## Formatos recomendados
 
 | Formato | Úsalo para |
 |---|---|
-| **SVG** | Logos, isotipo, iconos — escalan sin perder calidad |
-| **WebP** | Mockups de pantallas — mejor compresión que PNG/JPG |
 | **PNG** | Robot mascota y elementos con transparencia |
 
 **Peso máximo:** 500 KB por imagen (límite sugerido 1 MB).
@@ -49,10 +21,10 @@ assets/readme/
 
 Logo completo con el robot apoyado sobre el balón + wordmark "TECHCUP". Fondo oscuro (azul `#002652`), para usar sobre fondos claros o con versión invertida.
 
-> 📁 `assets/readme/branding/logo-principal.svg`
+![LOGO FUTBOLL F.png](../resources/logos/LOGO%20FUTBOLL%20F.png)
 
 ```md
-![Logo principal TechCup](assets/readme/branding/logo-principal.svg)
+![LOGO FUTBOLL F.png](../resources/logos/LOGO%20FUTBOLL%20F.png)
 ```
 
 <!-- INSERTAR IMAGEN AQUÍ -->
@@ -63,10 +35,10 @@ Logo completo con el robot apoyado sobre el balón + wordmark "TECHCUP". Fondo o
 
 Misma composición del logo principal pero sobre fondo blanco o transparente. Para documentación, presentaciones y fondos claros.
 
-> 📁 `assets/readme/branding/logo-light.svg`
+![LOGO FUTBOLL F LETRAS B.png](../resources/logos/LOGO%20FUTBOLL%20F%20LETRAS%20B.png)
 
 ```md
-![Logo versión clara TechCup](assets/readme/branding/logo-light.svg)
+![LOGO FUTBOLL F LETRAS B.png](../resources/logos/LOGO%20FUTBOLL%20F%20LETRAS%20B.png)
 ```
 
 <!-- INSERTAR IMAGEN AQUÍ -->
@@ -77,57 +49,28 @@ Misma composición del logo principal pero sobre fondo blanco o transparente. Pa
 
 Símbolo secundario de marca: hexágono con trazos que simulan circuitos electrónicos. Representa la interconexión entre Sistemas, IA y Ciberseguridad. Se usa solo cuando el espacio no permite el logo completo.
 
-> 📁 `assets/readme/branding/isotipo.svg`
+![logo ingenierias.png](../resources/logos/logo%20ingenierias.png)
 
 ```md
-![Isotipo TechCup](assets/readme/branding/isotipo.svg)
+![logo ingenierias.png](../resources/logos/logo%20ingenierias.png)
 ```
-
-<!-- INSERTAR IMAGEN AQUÍ -->
-
----
-
-### Wordmark — Tipografía TCF
-
-Logotipo tipográfico con las siglas o nombre completo en **Anton SC**. Versiones: color principal y monocromático.
-
-> 📁 `assets/readme/branding/wordmark.svg`
-
-```md
-![Wordmark TechCup](assets/readme/branding/wordmark.svg)
-```
-
-<!-- INSERTAR IMAGEN AQUÍ -->
 
 ---
 
 ### Paleta de colores
-
-Vista completa del sistema de color con los cinco colores por rol (azul, rojo, verde, amarillo, morado) y los acentos funcionales (blanco, cian `#00C8B4`).
-
-> 📁 `assets/readme/branding/paleta-colores.png`
-
-```md
-![Paleta de colores TechCup](assets/readme/branding/paleta-colores.png)
-```
-
-<!-- INSERTAR IMAGEN AQUÍ -->
-
----
-
-### Tipografía — Sistema jerárquico
-
-Muestra de las cuatro fuentes en uso: **Anton SC** (títulos), **Oswald** (subtítulos), **Poppins** (botones) e **Inter** (texto general), con sus tamaños de referencia.
-
-> 📁 `assets/readme/branding/tipografia.png`
-
-```md
-![Sistema tipográfico TechCup](assets/readme/branding/tipografia.png)
-```
-
-<!-- INSERTAR IMAGEN AQUÍ -->
+| Color | Hexadecimal | Uso recomendado |
+|---|---|---|
+| Azul oscuro | `#002652` | Fondo principal, encabezados, elementos destacados |
+| Cian | `#00C8B4` | Detalles, acentos,
+elementos interactivos |
+| Verde | `#01540D` | Rol de Capitán, mensajes de éxito |
+| Rojo oscuro | `#50070C` | Rol de Administrador, alertas
+| Amarillo/Oliva | `#514F01` | Rol de Árbitro, advertencias |
+| Morado | `#260053` | Rol de Organizador, elementos secundarios |
 
 ---
+
+
 
 ## Robot mascota
 
@@ -139,13 +82,11 @@ El robot es la firma visual del proyecto. Sus ojos en cian `#00C8B4` son constan
 
 Robot sonriente apoyado sobre el balón de fútbol. Fondo azul oscuro `#002652`. Es la versión principal que representa el rol de usuario/jugador.
 
-> 📁 `assets/readme/robot/robot-jugador.png`
+![asomandose rb.png](../resources/robots/asomandose%20rb.png)
 
 ```md
-![Robot mascota — Jugador](assets/readme/robot/robot-jugador.png)
+![asomandose rb.png](../resources/robots/asomandose%20rb.png)
 ```
-
-<!-- INSERTAR IMAGEN AQUÍ -->
 
 ---
 
