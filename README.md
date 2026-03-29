@@ -1,145 +1,157 @@
-# TechCup Fútbol - Frontend
+# TechCup Fútbol — Frontend
 
-Plataforma web para la gestión de un torneo de fútbol robótico (TechCup) construida con React + Vite.
+**Plataforma digital para la gestión del torneo semestral de fútbol**  
+Escuela Colombiana de Ingeniería Julio Garavito · Programas de Ingeniería
 
-## 📋 Descripción del Proyecto
-
-TechCup Fútbol es una aplicación web que permite a diferentes usuarios (Jugadores, Capitanes, Administradores, Árbitros y Organizadores) interactuar con un sistema de gestión de torneo robótico.
-
-## 🚀 Tecnologías Utilizadas
-
-- **React** 19.2.4 - Librería de UI
-- **Vite** 8.0.0 - Herramienta de build y desarrollo
-- **Tailwind CSS** 4.2.2 - Framework de estilos
-- **React Router DOM** 7.14.0 - Enrutamiento de páginas
-- **Axios** 1.14.0 - Cliente HTTP para peticiones
-- **React Icons** 5.6.0 - Iconos de interfaz
-- **ESLint** 9.39.4 - Linter para código
-
-## 📁 Estructura del Proyecto
-
-```
-src/
-├── pages/
-│   ├── Home.jsx              # Página principal con selección de roles
-│   ├── Landing.jsx           # Página de inicio/bienvenida
-│   ├── Login.jsx             # Página de login
-│   ├── Register.jsx          # Página de registrarse
-│   └── PerfilDeportivo.jsx   # Perfil deportivo del usuario
-├── assets/
-│   ├── logos/                # Logos del proyecto
-│   ├── robots/               # Imágenes de robots por rol
-│   ├── campus/               # Imágenes del campus
-│   └── imagenes TCF/         # Otros recursos visuales
-├── App.jsx                   # Componente principal
-├── main.jsx                  # Punto de entrada
-├── App.css                   # Estilos globales
-└── index.css                 # Estilos base
-```
-
-## ✅ Funcionalidades Implementadas
-
-### 1. Página de Inicio (Home.jsx)
-- Selección de roles de usuario con 5 opciones:
-  - 👤 Jugador - Para participar en equipos
-  - 🎖️ Capitán - Para dirigir equipos
-  - ⚙️ Administrador - Para gestionar el torneo
-  - 🏁 Árbitro - Para dirige partidos
-  - 📋 Organizador - Para coordinar eventos
-- Cambio dinámico de colores según rol seleccionado
-- Carrusel de imágenes del campus (rotación cada 5 segundos)
-- Interfaz responsiva (mobile, tablet, desktop)
-
-### 2. Autenticación
-- Página de Login (Login.jsx)
-- Página de Registro (Register.jsx)
-- Sistema de sesión de usuarios
-
-### 3. Perfil de Usuario
-- Página de Perfil Deportivo (PerfilDeportivo.jsx)
-- Visualización y edición de información del usuario
-
-### 4. Página de Bienvenida
-- Landing.jsx - Primera impresión del usuario
-
-## 🎨 Diseño Visual
-
-- **Paleta de colores por rol:**
-  - Jugador: #002652 (Azul oscuro)
-  - Capitán: #01540D (Verde oscuro)
-  - Administrador: #50070C (Rojo oscuro)
-  - Árbitro: #514F01 (Marrón oscuro)
-  - Organizador: #260053 (Púrpura oscuro)
-
-- **Tipografía:**
-  - Anton SC para títulos
-  - Inter para textos regulares
-
-## 🔧 Instalación y Setup
-
-### Requisitos
-- Node.js 16+ 
-- npm o yarn
-
-### Instalación
-
-```bash
-# Clonar repositorio
-git clone <url-del-repositorio>
-
-# Instalar dependencias
-npm install
-
-# Ejecutar servidor de desarrollo
-npm run dev
-
-# Construir para producción
-npm run build
-
-# Preview de build
-npm run preview
-```
-
-## 📦 Scripts Disponibles
-
-- `npm run dev` - Inicia servidor de desarrollo en http://localhost:5173/
-- `npm run build` - Genera build optimizado para producción
-- `npm run lint` - Ejecuta ESLint para validar código
-- `npm run preview` - Visualiza el build antes de desplegar
-
-## 📝 Estado Actual
-
-### Completado ✅
-- Estructura base del proyecto con React + Vite
-- Rutas principales configuradas
-- Página de inicio con selección de roles
-- Sistema de autenticación (estructurado)
-- Perfil de usuario
-- Assets visuales (logos, robots, campus)
-- Estilos con Tailwind CSS
-- Responsividad en todas las páginas
-
-### En Progreso 🔄
-- Integración con API backend
-- Validaciones de formularios
-- Sistema de permisos por rol
-
-### Por Hacer 📌
-- Conectar con endpoints del backend
-- Dashboard específico por rol
-- Gestión de equipos y partidos
-- Notificaciones en tiempo real
-
-## 🌿 Ramas Git
-
-- `main` - Rama principal (producción)
-- `Develop` - Rama de desarrollo
-- `intento` - Rama de trabajo actual
-
-## 📞 Contacto y Contribución
-
-Este es un proyecto del Tech-Cup DOSW Frontend 2026
+[![Estado](https://img.shields.io/badge/estado-en%20desarrollo-yellow?style=flat-square)](.)
+[![Curso](https://img.shields.io/badge/curso-DOSW%202026--1-blue?style=flat-square)](.)
+[![Licencia](https://img.shields.io/badge/licencia-privada-red?style=flat-square)](.)
 
 ---
 
-**Última actualización:** Abril 2026
+## Tabla de contenidos
+
+- [Descripción](#descripción)
+- [Tecnologías](#tecnologías)
+- [Funcionalidades](#funcionalidades)
+- [Identidad visual](#identidad-visual)
+- [Diseño en Figma](#diseño-en-figma)
+- [Equipo](#equipo)
+- [Estado del proyecto](#estado-del-proyecto)
+
+---
+
+## Descripción
+
+TechCup Fútbol es la interfaz oficial de la plataforma que centraliza la gestión del torneo semestral de fútbol entre los programas de ingeniería. El frontend consume la API REST del backend para cubrir todo el ciclo del torneo: desde el registro de jugadores hasta la visualización de estadísticas finales.
+
+La plataforma está dirigida a cuatro tipos de usuario con experiencias diferenciadas:
+
+| Rol | Responsabilidad |
+|---|---|
+| **Jugador** | Perfil deportivo, disponibilidad, historial |
+| **Capitán** | Gestión de equipo, alineaciones, invitaciones |
+| **Árbitro** | Registro de resultados, panel de partido |
+| **Administrador / Organizador** | Configuración del torneo, canchas, reglamento |
+
+---
+
+## Tecnologías
+
+
+---
+
+## Funcionalidades
+
+### Autenticación y perfil
+- Registro e inicio de sesión de usuarios
+- Verificación de correo electrónico
+- Protección de rutas por rol
+- Edición de perfil deportivo
+- Gestión de disponibilidad de jugadores
+
+### Gestión del torneo
+- Creación y configuración de torneos
+- Definición de reglamento y canchas
+- Control de estados del torneo
+- Vista pública del torneo
+
+### Equipos
+- Creación de equipos y gestión de plantilla
+- Búsqueda de jugadores disponibles
+- Sistema de invitaciones
+- Carga de comprobante de pago
+
+### Partidos
+- Organización de alineaciones
+- Visualización de la alineación rival
+- Registro de resultados
+- Panel de árbitros
+
+### Resultados y estadísticas
+- Tabla de posiciones
+- Bracket eliminatorio
+- Ranking de goleadores
+- Historial de partidos y resultados por equipo
+
+---
+
+## Identidad visual
+
+La marca **TECHCUP** nace de la unión entre tecnología y deporte universitario. El sistema visual refleja este concepto en cada componente de la interfaz.
+
+### Logotipo
+
+El logo representa **un robot amigable apoyado sobre un balón de fútbol**: el robot simboliza los programas de Sistemas, Inteligencia Artificial y Ciberseguridad; el balón es el elemento central del torneo. Las formas redondeadas y líneas suaves garantizan reconocimiento rápido y buena adaptación a interfaces digitales.
+
+Como símbolo de marca secundario se usa un **hexágono con trazos de circuito electrónico**, representando la interconexión entre las disciplinas tecnológicas.
+
+### Paleta de colores
+
+La paleta diferencia los roles del sistema mediante colores con semántica deportiva e institucional clara:
+
+| Rol | Color | HEX | Significado |
+|---|---|---|---|
+| Usuario (base) | 🔵 Azul oscuro | `#002652` | Confianza, estabilidad, tecnología |
+| Administrador | 🔴 Rojo | `#50070C` | Autoridad, acciones críticas |
+| Capitán | 🟢 Verde | `#01540D` | Liderazgo, campo de juego |
+| Árbitro | 🟡 Amarillo | `#514F01` | Imparcialidad, regulación |
+| Organizador | 🟣 Morado | `#260053` | Planificación, coordinación |
+
+**Colores funcionales / semánticos:**  
+`#FFFFFF` / `#F0F0F0` — fondos de contenido y formularios  
+`#00C8B4` — acento cian/agua marina (ojos del robot, badges, enlaces activos)  
+Verde — victorias · Rojo — derrotas · Dorado — empates
+
+### Tipografía
+
+| Elemento | Fuente | Tamaño |
+|---|---|---|
+| Título principal (H1) | **Anton SC** | 100 px |
+| Subtítulo (H2) | **Oswald** | 40 px |
+| Texto general | **Inter** | 24 px |
+| Botones | **Poppins** | 24 px |
+
+### Estilo de componentes
+
+- Fondo dominante: azul oscuro `#002652` en headers, barras laterales y paneles
+- Modales y áreas de contenido: gris claro `#F0F0F0`–`#D8D8D8` (67–80 % del área modal)
+- Formas redondeadas y líneas suaves para todos los componentes interactivos
+- Alto contraste texto blanco sobre fondo oscuro para accesibilidad
+
+---
+
+## Diseño en Figma
+
+| Recurso | Enlace |
+|---|---|
+| Archivo principal Figma | `[PONER_LINK_AQUI]` |
+| Manual de identidad visual | `docs/Manual_de_identidad_final.pdf` |
+
+### Mockups
+
+
+
+---
+
+## Equipo
+
+| Nombre |
+|---|
+| Joshua David Quiroga Landazabal |
+| Juan David Valero Abril |
+| Juan Carlos Bohórquez Monroy |
+| Carlos Andrés Uribe Vargas |
+| Andrés Felipe Savogal Wilches |
+
+---
+
+## Estado del proyecto
+
+> 🚧 **En desarrollo** — Curso Ciclos de Desarrollo de Software (DOSW) · Periodo 2026-1
+
+---
+
+<div align="center">
+  <sub>TechCup Fútbol · Escuela Colombiana de Ingeniería Julio Garavito</sub>
+</div>
