@@ -27,7 +27,7 @@ export default function Register() {
     contrasena: '',
     confirmarContrasena: '',
     correo: '',
-    tipoUsuario: '',
+    tipoUsuario: selectedRole === 'Capitan' ? 'Interno' : '',
   });
   const [showDropdown, setShowDropdown] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -178,40 +178,42 @@ export default function Register() {
             />
           </div>
 
-          {/* Tipo de usuario */}
-          <div className="flex items-center gap-4 mt-2">
-            <span className="text-sm font-medium" style={{ fontFamily: "'Inter', sans-serif" }}>Tipo de usuario</span>
-            <div className="relative">
-              <button
-                onClick={() => setShowDropdown(!showDropdown)}
-                className="flex items-center gap-3 border border-white/30 rounded px-6 py-2.5 text-white min-w-[220px] justify-between"
-                style={{ fontFamily: "'Poppins', sans-serif", backgroundColor: `${config.bg}CC` }}
-              >
-                <span className="italic">{form.tipoUsuario || 'Seleccione Uno'}</span>
-                <svg className={`w-5 h-5 transition-transform ${showDropdown ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              {showDropdown && (
-                <div className="absolute top-full left-0 w-full border border-white/30 rounded mt-1 z-30 overflow-hidden" style={{ backgroundColor: config.bg }}>
-                  <button
-                    onClick={() => handleTipoUsuario('Interno')}
-                    className="w-full text-left px-6 py-2.5 hover:bg-white/10 transition-colors"
-                    style={{ fontFamily: "'Poppins', sans-serif" }}
-                  >
-                    Interno
-                  </button>
-                  <button
-                    onClick={() => handleTipoUsuario('Externo')}
-                    className="w-full text-left px-6 py-2.5 hover:bg-white/10 transition-colors"
-                    style={{ fontFamily: "'Poppins', sans-serif" }}
-                  >
-                    Externo
-                  </button>
-                </div>
-              )}
+          {/* Tipo de usuario - solo si NO es Capitán */}
+          {selectedRole !== 'Capitan' && (
+            <div className="flex items-center gap-4 mt-2">
+              <span className="text-sm font-medium" style={{ fontFamily: "'Inter', sans-serif" }}>Tipo de usuario</span>
+              <div className="relative">
+                <button
+                  onClick={() => setShowDropdown(!showDropdown)}
+                  className="flex items-center gap-3 border border-white/30 rounded px-6 py-2.5 text-white min-w-[220px] justify-between"
+                  style={{ fontFamily: "'Poppins', sans-serif", backgroundColor: `${config.bg}CC` }}
+                >
+                  <span className="italic">{form.tipoUsuario || 'Seleccione Uno'}</span>
+                  <svg className={`w-5 h-5 transition-transform ${showDropdown ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                {showDropdown && (
+                  <div className="absolute top-full left-0 w-full border border-white/30 rounded mt-1 z-30 overflow-hidden" style={{ backgroundColor: config.bg }}>
+                    <button
+                      onClick={() => handleTipoUsuario('Interno')}
+                      className="w-full text-left px-6 py-2.5 hover:bg-white/10 transition-colors"
+                      style={{ fontFamily: "'Poppins', sans-serif" }}
+                    >
+                      Interno
+                    </button>
+                    <button
+                      onClick={() => handleTipoUsuario('Externo')}
+                      className="w-full text-left px-6 py-2.5 hover:bg-white/10 transition-colors"
+                      style={{ fontFamily: "'Poppins', sans-serif" }}
+                    >
+                      Externo
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Configurar Perfil Deportivo */}
           <div className="mt-4">

@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import logoTCF from '../assets/logos/logo-tcf.png';
 import robotPintor from '../assets/robots/Robot-arte.png';
-import robotTimido from '../assets/robots/robot-timido.png';
-import robotSaludo from '../assets/robots/robot-jugador.png';
+import robotSilueta from '../assets/robots/Silueta-robot.png';
+import robotContinuar from '../assets/robots/Robot-Continuar.png';
 
 const posiciones = [
   'Portero', 'Defensa Central', 'Lateral Derecho', 'Lateral Izquierdo',
@@ -56,15 +56,15 @@ export default function PerfilDeportivo() {
       <img
         src={robotPintor}
         alt="Robot pintor"
-        className="absolute right-[-40px] top-16 h-[85vh] object-contain z-0 pointer-events-none"
+        className="absolute right-[-60px] top-20 h-[90vh] object-contain z-0 pointer-events-none"
       />
 
       {/* Content */}
       <div className="relative z-10 flex-1 px-8 md:px-12 py-6 flex flex-col">
         {/* Row 1: Title + Position dropdowns */}
-        <div className="flex flex-wrap items-center gap-6 mb-6">
+        <div className="flex flex-wrap items-center gap-8 mb-8">
           <h2
-            className="text-xl md:text-2xl italic"
+            className="text-2xl md:text-3xl italic"
             style={{ fontFamily: "'Oswald', sans-serif", fontWeight: 400 }}
           >
             Configuremos Tu Perfil Deportivo
@@ -74,11 +74,11 @@ export default function PerfilDeportivo() {
           <div className="relative">
             <button
               onClick={() => { setShowPosicion(!showPosicion); setShowOtra(false); setShowPie(false); }}
-              className="flex items-center gap-3 bg-[#001a3a] border border-white/30 rounded px-5 py-2.5 min-w-[220px] justify-between"
+              className="flex items-center gap-3 bg-[#001a3a] border border-white/30 rounded px-6 py-3 min-w-[240px] justify-between text-base"
               style={{ fontFamily: "'Poppins', sans-serif" }}
             >
-              <span className="text-sm">{posicion || 'Cual es tu posicion'}</span>
-              <svg className={`w-4 h-4 transition-transform ${showPosicion ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <span>{posicion || 'Cual es tu posicion'}</span>
+              <svg className={`w-5 h-5 transition-transform ${showPosicion ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
               </svg>
             </button>
@@ -88,7 +88,7 @@ export default function PerfilDeportivo() {
                   <button
                     key={p}
                     onClick={() => { setPosicion(p); setShowPosicion(false); }}
-                    className="w-full text-left px-5 py-2 text-sm hover:bg-white/10 transition-colors"
+                    className="w-full text-left px-6 py-2.5 text-base hover:bg-white/10 transition-colors"
                     style={{ fontFamily: "'Poppins', sans-serif" }}
                   >
                     {p}
@@ -102,11 +102,11 @@ export default function PerfilDeportivo() {
           <div className="relative">
             <button
               onClick={() => { setShowOtra(!showOtra); setShowPosicion(false); setShowPie(false); }}
-              className="flex items-center gap-3 bg-[#001a3a] border border-white/30 rounded px-5 py-2.5 min-w-[200px] justify-between"
+              className="flex items-center gap-3 bg-[#001a3a] border border-white/30 rounded px-6 py-3 min-w-[220px] justify-between text-base"
               style={{ fontFamily: "'Poppins', sans-serif" }}
             >
-              <span className="text-sm">{otraPosicion || 'Otra Posicion'}</span>
-              <svg className={`w-4 h-4 transition-transform ${showOtra ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <span>{otraPosicion || 'Otra Posicion'}</span>
+              <svg className={`w-5 h-5 transition-transform ${showOtra ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
               </svg>
             </button>
@@ -116,7 +116,7 @@ export default function PerfilDeportivo() {
                   <button
                     key={p}
                     onClick={() => { setOtraPosicion(p); setShowOtra(false); }}
-                    className="w-full text-left px-5 py-2 text-sm hover:bg-white/10 transition-colors"
+                    className="w-full text-left px-6 py-2.5 text-base hover:bg-white/10 transition-colors"
                     style={{ fontFamily: "'Poppins', sans-serif" }}
                   >
                     {p}
@@ -129,7 +129,7 @@ export default function PerfilDeportivo() {
 
         {/* Row 2: Images section */}
         <p
-          className="text-lg mb-4 italic"
+          className="text-2xl mb-6 italic font-semibold"
           style={{ fontFamily: "'Oswald', sans-serif", fontWeight: 400 }}
         >
           Agrega tu mejor imagen
@@ -139,11 +139,11 @@ export default function PerfilDeportivo() {
           {/* Profile photo circle */}
           <div className="flex flex-col items-center gap-3">
             <label className="cursor-pointer">
-              <div className="w-36 h-36 rounded-full bg-gray-600/80 flex items-center justify-center overflow-hidden border-2 border-white/30">
+              <div className="w-48 h-48 rounded-full bg-gray-600/80 flex items-center justify-center overflow-hidden border-2 border-white/30">
                 {fotoPerfil ? (
                   <img src={fotoPerfil} alt="Perfil" className="w-full h-full object-cover" />
                 ) : (
-                  <svg className="w-14 h-14 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-20 h-20 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" />
                   </svg>
                 )}
@@ -159,7 +159,7 @@ export default function PerfilDeportivo() {
               placeholder="Seleciona tu Dorsal"
               value={dorsal}
               onChange={(e) => setDorsal(e.target.value)}
-              className="bg-[#001a3a] border border-white/30 rounded px-4 py-2 text-white placeholder-white/60 outline-none w-[200px] text-sm"
+              className="bg-[#001a3a] border border-white/30 rounded px-4 py-2 text-white placeholder-white/60 outline-none w-[220px] text-sm"
               style={{ fontFamily: "'Poppins', sans-serif" }}
             />
 
@@ -167,7 +167,7 @@ export default function PerfilDeportivo() {
             <div className="relative">
               <button
                 onClick={() => { setShowPie(!showPie); setShowPosicion(false); setShowOtra(false); }}
-                className="flex items-center gap-3 bg-[#001a3a] border border-white/30 rounded px-4 py-2 w-[200px] justify-between"
+                className="flex items-center gap-3 bg-[#001a3a] border border-white/30 rounded px-4 py-2 w-[220px] justify-between"
                 style={{ fontFamily: "'Poppins', sans-serif" }}
               >
                 <span className="text-sm">{pieDominante || 'Pie Dominante'}</span>
@@ -194,12 +194,12 @@ export default function PerfilDeportivo() {
 
           {/* Full body photo — robot silhouette placeholder */}
           <label className="cursor-pointer flex flex-col items-center">
-            <div className="w-44 h-72 bg-gray-600/40 border-2 border-dashed border-white/20 rounded-lg flex flex-col items-center justify-center gap-2 hover:bg-gray-600/60 transition-colors">
+            <div className="w-56 h-80 bg-gray-600/40 border-2 border-dashed border-white/20 rounded-lg flex flex-col items-center justify-center gap-4 hover:bg-gray-600/60 transition-colors">
               {fotoCuerpo ? (
                 <img src={fotoCuerpo} alt="Cuerpo completo" className="w-full h-full object-cover rounded-lg" />
               ) : (
                 <>
-                  <img src={robotTimido} alt="" className="w-24 opacity-40" />
+                  <img src={robotSilueta} alt="" className="w-32 opacity-60" />
                   <span
                     className="text-center text-sm uppercase font-bold leading-tight px-3 opacity-80"
                     style={{ fontFamily: "'Anton SC', sans-serif" }}
@@ -213,14 +213,12 @@ export default function PerfilDeportivo() {
           </label>
 
           {/* Continue section */}
-          <div className="flex flex-col items-center gap-4 self-center">
-            <img src={robotSaludo} alt="" className="w-16 opacity-40" />
+          <div className="flex flex-col items-center gap-8 self-center">
             <button
               onClick={() => navigate('/registro')}
-              className="bg-[#001a3a] border border-white/30 px-12 py-3 rounded text-white text-lg hover:bg-white/10 transition-colors"
-              style={{ fontFamily: "'Poppins', sans-serif" }}
+              className="bg-none border-none p-0 hover:opacity-80 transition-opacity cursor-pointer"
             >
-              Continuar
+              <img src={robotContinuar} alt="Continuar" className="w-40 opacity-80 hover:opacity-100 transition-opacity" />
             </button>
           </div>
         </div>
