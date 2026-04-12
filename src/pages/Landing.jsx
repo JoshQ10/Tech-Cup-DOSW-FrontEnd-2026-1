@@ -3,7 +3,7 @@ import logoTCF from '../assets/logos/logo-tcf.png';
 import logoEscuela from '../assets/logos/logo-escuela.png';
 import logoIngenierias from '../assets/logos/logo-ingenierias.png';
 import campus1 from '../assets/campus/campus-1.jpg';
-import campus2 from '../assets/campus/campus-2.jpg';
+import campus2 from '../assets/campus/cancha eci.png';
 import campus3 from '../assets/campus/campus-3.jpg';
 import campus4 from '../assets/campus/campus-4.png';
 import campus5 from '../assets/campus/campus-5.jpg';
@@ -19,7 +19,7 @@ export default function Landing() {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentImage((prev) => (prev + 1) % campusImages.length);
-    }, 5000);
+    }, 3000);
     return () => clearInterval(interval);
   }, []);
 
