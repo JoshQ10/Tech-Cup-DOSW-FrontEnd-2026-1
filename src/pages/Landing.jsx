@@ -7,6 +7,7 @@ import campus2 from '../assets/campus/campus-2.jpg';
 import campus3 from '../assets/campus/campus-3.jpg';
 import campus4 from '../assets/campus/campus-4.png';
 import campus5 from '../assets/campus/campus-5.jpg';
+import logoTCFConLetras from '../assets/logos/LOGO FUTBOLL F Con letras.png';
 import { useState, useEffect } from 'react';
 
 const campusImages = [campus1, campus2, campus3, campus4, campus5];
@@ -40,14 +41,14 @@ export default function Landing() {
         <div className="absolute inset-0 bg-black/35" />
 
         {/* Content */}
-        <div className="relative z-10 flex flex-col items-center">
+        <div className="relative z-10 flex flex-col items-center gap-6">
           {/* Logos + Title */}
           <div className="flex items-center gap-6 mb-10">
-            <img src={logoEscuela} alt="Escuela Colombiana de Ingeniería" className="h-24 md:h-32 object-contain" />
+            <img src={logoEscuela} alt="Escuela Colombiana de Ingeniería" className="h-24 md:h-[160px] object-contain" />
             <div className="w-px h-20 bg-[#002652]" />
-            <img src={logoTCF} alt="TCF" className="w-20 md:w-24 object-contain" />
+            <img src={logoTCF} alt="TCF" className="w-20 md:w-[120px] object-contain" />
             <h1
-              className="text-4xl md:text-6xl text-[#002652] uppercase"
+              className="text-4xl md:text-[70px] text-[#002652] uppercase"
               style={{ fontFamily: "'Anton SC', sans-serif" }}
             >
               TechCup Futbol
@@ -55,17 +56,17 @@ export default function Landing() {
           </div>
 
           {/* Buttons */}
-          <div className="flex flex-col gap-4 w-72">
+          <div className="flex flex-col gap-8 w-[220px]">
             <button
               onClick={() => navigate('/iniciar-sesion')}
-              className="w-full py-3.5 bg-[#002652]/90 text-white rounded text-lg hover:bg-[#001a3a] transition-colors border border-white/30"
+              className="w-full h-[60px] bg-[#002652] text-white rounded text-lg hover:bg-[#001a3a] transition-colors border border-white/30"
               style={{ fontFamily: "'Poppins', sans-serif" }}
             >
               Iniciar Sesion
             </button>
             <button
               onClick={() => navigate('/seleccionar-rol')}
-              className="w-full py-3.5 bg-[#002652]/90 text-white rounded text-lg hover:bg-[#001a3a] transition-colors border border-white/30"
+              className="w-full h-[60px] bg-[#002652] text-white rounded text-lg hover:bg-[#001a3a] transition-colors border border-white/30"
               style={{ fontFamily: "'Poppins', sans-serif" }}
             >
               Registrarse
@@ -74,84 +75,78 @@ export default function Landing() {
         </div>
       </div>
 
-      {/* Section 2 — Footer (scroll down to see) */}
-      <div className="w-full" style={{ fontFamily: "'Inter', sans-serif" }}>
-        {/* Top half — Dark blue */}
-        <div className="bg-[#002652] px-10 md:px-16 py-10">
-          <div className="max-w-5xl mx-auto">
+      {/* Section 2 — Footer */}
+      <div className="w-full flex" style={{ fontFamily: "'Inter', sans-serif" }}>
+
+        {/* Izquierda — Azul oscuro */}
+        <div className="bg-[#002652] w-1/2 px-10 md:px-16 py-10 flex flex-col gap-6">
+          {/* Redes */}
+          <div>
             <h3 className="text-white font-semibold text-lg mb-4">Redes :</h3>
-            <div className="flex flex-col gap-2 text-white/80 text-sm">
-              <div className="flex items-center gap-3">
-                <span className="text-base">&#9678;</span>
-                <span>Escuela Colombiana de Ingenieria Julio Garavito</span>
+            <div className="flex flex-col gap-3 text-white/80 text-sm">
+              {/* Instagram */}
+              <div className="flex items-center gap-3 cursor-pointer hover:text-white transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+                </svg>
+                <span className="underline">Escuela Colombiana de Ingenieria Julio Garavito</span>
               </div>
-              <div className="flex items-center gap-3">
-                <span className="text-base font-bold">&#10005;</span>
-                <span>Escuela Colombiana de Ingenieria Julio Garavito</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom half — White */}
-        <div className="bg-white px-10 md:px-16 py-10">
-          <div className="max-w-5xl mx-auto flex flex-col md:flex-row justify-between gap-10">
-            {/* Left — Aviso */}
-            <div className="max-w-xl">
-              <h4
-                className="text-[#002652] font-bold text-base mb-3"
-                style={{ fontFamily: "'Oswald', sans-serif" }}
-              >
-                Aviso Informativo
-              </h4>
-              <p
-                className="text-gray-600 text-sm leading-relaxed"
-                style={{ fontFamily: "'Inter', sans-serif" }}
-              >
-                Algunas imágenes, equipos o características mostradas en la aplicación pueden variar con respecto a la información real de los torneos. Los datos como resultados, posiciones o estadísticas pueden actualizarse o modificarse sin previo aviso.
-              </p>
-              <p
-                className="text-gray-600 text-sm leading-relaxed mt-3"
-                style={{ fontFamily: "'Inter', sans-serif" }}
-              >
-                Esta aplicación ha sido desarrollada con fines académicos como proyecto de corte para la asignatura Desarrollo de Software (DOSW) y permite la gestión de equipos, partidos y resultados dentro de un torneo de fútbol.
-              </p>
-              <p
-                className="text-gray-600 text-sm leading-relaxed mt-3"
-                style={{ fontFamily: "'Inter', sans-serif" }}
-              >
-                La información mostrada depende de los datos ingresados por los usuarios o administradores del sistema.
-              </p>
-            </div>
-
-            {/* Right — Logos institucionales */}
-            <div className="flex flex-col gap-6 flex-shrink-0">
-              <div className="flex items-center gap-4">
-                <img src={logoEscuela} alt="Escuela" className="h-20 object-contain" />
-                <span className="text-gray-700 text-sm" style={{ fontFamily: "'Inter', sans-serif" }}>
-                  Universidad Escuela Colombiana De<br />Ingenieria Julio Garavito
-                </span>
-              </div>
-              <div className="flex items-center gap-4">
-                <img src={logoIngenierias} alt="Union Ingenierías" className="h-14 object-contain" />
-                <span className="text-gray-700 text-sm" style={{ fontFamily: "'Inter', sans-serif" }}>
-                  Union Ingenierias: Sistemas, Inteligencia<br />Artificial, Ciberseguridad
-                </span>
-              </div>
-              <div className="flex items-center gap-4">
-                <img src={logoTCF} alt="TCF" className="h-14 object-contain" />
-                <div className="flex flex-col">
-                  <span className="text-[#002652] text-sm font-bold" style={{ fontFamily: "'Anton SC', sans-serif" }}>
-                    TechCup Futbol
-                  </span>
-                  <span className="text-gray-800 text-sm" style={{ fontFamily: "'Inter', sans-serif" }}>
-                    2026 Derechos reservados
-                  </span>
-                </div>
+              {/* X / Twitter */}
+              <div className="flex items-center gap-3 cursor-pointer hover:text-white transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.26 5.632 5.905-5.632zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                </svg>
+                <span className="underline">Escuela Colombiana de Ingenieria Julio Garavito</span>
               </div>
             </div>
           </div>
+
+          {/* Aviso */}
+          <div>
+            <h4 className="text-white font-semibold text-sm mb-3">Aviso informativo</h4>
+            <p className="text-white/70 text-sm leading-relaxed">
+              Algunas imágenes, equipos o características mostradas en la aplicación pueden variar con respecto a la información real de los torneos.
+              Los datos como resultados, posiciones o estadísticas pueden actualizarse o modificarse sin previo aviso.
+            </p>
+            <p className="text-white/70 text-sm leading-relaxed mt-2">
+              Esta aplicación ha sido desarrollada con fines académicos como proyecto de corte para la asignatura Desarrollo de Software (DOSW) y
+              permite la gestión de equipos, partidos y resultados dentro de un torneo de fútbol.
+            </p>
+            <p className="text-white/70 text-sm leading-relaxed mt-2">
+              La información mostrada depende de los datos ingresados por los usuarios o administradores del sistema.
+            </p>
+          </div>
         </div>
+
+        {/* Derecha — Blanca */}
+        <div className="bg-white w-1/2 px-10 py-10 flex flex-col justify-center gap-8">
+
+          {/* Fila 1 */}
+          <div className="flex items-center gap-6">
+            <div className="w-[140px] flex items-center justify-center flex-shrink-0">
+              <img src={logoEscuela} alt="Escuela" className="h-16 object-contain" />
+            </div>
+            <span className="text-gray-700 text-sm">Universida Escuela Colombiana De Ingenieria Julio Garavito</span>
+          </div>
+
+          {/* Fila 2 */}
+          <div className="flex items-center gap-6">
+            <div className="w-[140px] flex items-center justify-center flex-shrink-0">
+              <img src={logoIngenierias} alt="Union Ingenierías" className="h-16 object-contain" />
+            </div>
+            <span className="text-gray-700 text-sm">Union Ingenierias: Sistemas, Inteligencia Arficial, Ciberseguridad</span>
+          </div>
+
+          {/* Fila 3 */}
+          <div className="flex items-center gap-6">
+            <div className="w-[140px] flex items-center justify-center flex-shrink-0">
+              <img src={logoTCFConLetras} alt="TechCup Futbol" className="h-16 object-contain" />
+            </div>
+            <span className="text-gray-700 text-sm">TechCup Futbol 2026 Derechos reservados</span>
+          </div>
+
+        </div>
+
       </div>
     </div>
   );
