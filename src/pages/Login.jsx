@@ -8,6 +8,7 @@ import campus2 from '../assets/campus/campus-2.jpg';
 import campus3 from '../assets/campus/campus-3.jpg';
 import campus4 from '../assets/campus/campus-4.png';
 import campus5 from '../assets/campus/campus-5.jpg';
+import { loginUser } from '../services/api';
 
 const campusImages = [campus1, campus2, campus3, campus4, campus5];
 
@@ -18,7 +19,11 @@ export default function Login() {
   const [currentImage, setCurrentImage] = useState(0);
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
+  const [loginError, setLoginError] = useState('');
+  const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [showHelpModal, setShowHelpModal] = useState(false);
+  const [helpText, setHelpText] = useState('');
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -27,13 +32,25 @@ export default function Login() {
     return () => clearInterval(interval);
   }, []);
 
-  const handleIngresar = () => {
+  const handleIngresar = async () => {
     const eErr = email.trim() === '';
     const pErr = password.trim() === '';
     setEmailError(eErr);
     setPasswordError(pErr);
-    if (!eErr && !pErr) {
-      // lógica de login aquí
+    setLoginError('');
+
+    if (eErr || pErr) return;
+
+    try {
+      setLoading(true);
+      await loginUser(email, password);
+      navigate('/seleccionar-rol');
+    } catch (error) {
+      setEmailError(true);
+      setPasswordError(true);
+      setLoginError('Usuario o contraseña incorrectos');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -47,11 +64,7 @@ export default function Login() {
           style={{ background: 'rgba(0,0,0,0.45)' }}
         >
           <div className="bg-[#e8e8e8] rounded-xl flex items-center gap-6 px-10 py-10 max-w-xl w-full mx-6">
-            <img
-              src={robotModal}
-              alt="Robot"
-              className="h-40 w-auto object-contain flex-shrink-0"
-            />
+            <img src={robotModal} alt="Robot" className="h-40 w-auto object-contain flex-shrink-0" />
             <div className="flex flex-col gap-8">
               <p
                 className="text-[#002652] text-xl uppercase font-bold leading-snug"
@@ -79,6 +92,57 @@ export default function Login() {
         </div>
       )}
 
+      {/* ── MODAL ayuda/comentarios ── */}
+      {showHelpModal && (
+        <div
+          className="absolute inset-0 z-50 flex items-center justify-center"
+          style={{ background: 'rgba(0,0,0,0.45)' }}
+        >
+          <div className="bg-[#e8e8e8] rounded-xl flex items-center gap-6 px-10 py-10 max-w-xl w-full mx-6">
+            <img src={robotModal} alt="Robot" className="h-40 w-auto object-contain flex-shrink-0" />
+            <div className="flex flex-col gap-6 w-full">
+              <p
+                className="text-[#002652] text-xl uppercase font-bold leading-snug"
+                style={{ fontFamily: "'Anton SC', sans-serif" }}
+              >
+                Apreciamos tus comentarios
+              </p>
+              <textarea
+                value={helpText}
+                onChange={(e) => setHelpText(e.target.value)}
+                placeholder="Escribe tu comentario aquí..."
+                rows={4}
+                className="w-full px-4 py-3 rounded text-sm text-gray-700 placeholder-gray-400 outline-none resize-none"
+                style={{
+                  fontFamily: "'Inter', sans-serif",
+                  border: '2px solid transparent',
+                  background: 'rgba(255,255,255,0.9)',
+                  borderRadius: '6px',
+                }}
+                onFocus={(e) => e.target.style.border = '2px solid #4400FF'}
+                onBlur={(e) => e.target.style.border = '2px solid transparent'}
+              />
+              <div className="flex gap-4">
+                <button
+                  onClick={() => { setHelpText(''); setShowHelpModal(false); }}
+                  className="px-6 py-3 bg-[#002652] text-white rounded text-base hover:bg-[#001a3a] transition-colors"
+                  style={{ fontFamily: "'Poppins', sans-serif" }}
+                >
+                  Enviar
+                </button>
+                <button
+                  onClick={() => { setHelpText(''); setShowHelpModal(false); }}
+                  className="px-6 py-3 bg-[#001a3a] text-white rounded text-base hover:bg-[#002652] transition-colors"
+                  style={{ fontFamily: "'Poppins', sans-serif" }}
+                >
+                  Salir
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* ── LEFT — Campus + Robot ── */}
       <div className="hidden md:flex w-1/2 relative items-end justify-start overflow-hidden">
         {campusImages.map((img, index) => (
@@ -91,10 +155,7 @@ export default function Login() {
             }}
           />
         ))}
-
-        {/* Robot + texto */}
         <div className="relative z-10 flex items-end gap-6 px-10 pb-0 w-full">
-          {/* Robot cintura arriba */}
           <div className="flex-shrink-0 overflow-hidden" style={{ height: '55vh' }}>
             <img
               src={robotSaludo}
@@ -103,7 +164,6 @@ export default function Login() {
               style={{ height: '90vh', marginTop: '-10vh' }}
             />
           </div>
-          {/* Texto a la altura de la cabeza */}
           <div className="flex flex-col mb-[30vh]">
             <h2
               className="text-3xl lg:text-5xl text-white uppercase leading-tight"
@@ -147,7 +207,7 @@ export default function Login() {
           {/* Email */}
           <div>
             <label
-              className={`block text-sm font-medium mb-2 ${emailError ? 'text-red-400' : 'text-white'}`}
+              className={`block text-sm font-medium mb-2 ${emailError ? 'text-[#FF0000]' : 'text-white'}`}
               style={{ fontFamily: "'Inter', sans-serif" }}
             >
               Email / Usuario
@@ -156,18 +216,36 @@ export default function Login() {
               type="text"
               placeholder="User Name"
               value={email}
-              onChange={(e) => { setEmail(e.target.value); setEmailError(false); }}
-              className="w-full px-4 py-4 text-gray-700 placeholder-gray-400 outline-none text-sm"
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setEmailError(false);
+                setLoginError('');
+                e.target.classList.remove('placeholder-error');
+              }}
+              className={`w-full px-4 py-4 outline-none text-sm ${emailError ? 'placeholder-error' : ''}`}
               style={{
                 fontFamily: "'Inter', sans-serif",
                 borderRadius: '6px',
-                border: emailError ? '2px solid #f87171' : '2px solid transparent',
+                border: emailError ? '2px solid #FF0000' : '2px solid transparent',
                 background: 'rgba(255,255,255,0.9)',
+                color: emailError ? '#FF0000' : '#374151',
+              }}
+              onFocus={(e) => {
+                if (!emailError) {
+                  e.target.style.border = '2px solid #4400FF';
+                  e.target.classList.add('placeholder-focused');
+                }
+              }}
+              onBlur={(e) => {
+                if (!emailError) {
+                  e.target.style.border = '2px solid transparent';
+                  e.target.classList.remove('placeholder-focused');
+                }
               }}
             />
             {emailError && (
-              <span className="text-red-400 text-xs mt-1 block" style={{ fontFamily: "'Inter', sans-serif" }}>
-                Error
+              <span className="text-[#FF0000] text-xs mt-1 block" style={{ fontFamily: "'Inter', sans-serif" }}>
+                {loginError || 'Campo requerido'}
               </span>
             )}
           </div>
@@ -175,7 +253,7 @@ export default function Login() {
           {/* Password */}
           <div>
             <label
-              className={`block text-sm font-medium mb-2 ${passwordError ? 'text-red-400' : 'text-white'}`}
+              className={`block text-sm font-medium mb-2 ${passwordError ? 'text-[#FF0000]' : 'text-white'}`}
               style={{ fontFamily: "'Inter', sans-serif" }}
             >
               Contraseña
@@ -184,18 +262,36 @@ export default function Login() {
               type="password"
               placeholder="Password"
               value={password}
-              onChange={(e) => { setPassword(e.target.value); setPasswordError(false); }}
-              className="w-full px-4 py-4 text-gray-700 placeholder-gray-400 outline-none text-sm"
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setPasswordError(false);
+                setLoginError('');
+                e.target.classList.remove('placeholder-error');
+              }}
+              className={`w-full px-4 py-4 outline-none text-sm ${passwordError ? 'placeholder-error' : ''}`}
               style={{
                 fontFamily: "'Inter', sans-serif",
                 borderRadius: '6px',
-                border: passwordError ? '2px solid #f87171' : '2px solid transparent',
+                border: passwordError ? '2px solid #FF0000' : '2px solid transparent',
                 background: 'rgba(255,255,255,0.9)',
+                color: passwordError ? '#FF0000' : '#374151',
+              }}
+              onFocus={(e) => {
+                if (!passwordError) {
+                  e.target.style.border = '2px solid #4400FF';
+                  e.target.classList.add('placeholder-focused');
+                }
+              }}
+              onBlur={(e) => {
+                if (!passwordError) {
+                  e.target.style.border = '2px solid transparent';
+                  e.target.classList.remove('placeholder-focused');
+                }
               }}
             />
             {passwordError && (
-              <span className="text-red-400 text-xs mt-1 block" style={{ fontFamily: "'Inter', sans-serif" }}>
-                Error
+              <span className="text-[#FF0000] text-xs mt-1 block" style={{ fontFamily: "'Inter', sans-serif" }}>
+                {loginError || 'Campo requerido'}
               </span>
             )}
           </div>
@@ -203,10 +299,11 @@ export default function Login() {
           {/* Ingresar */}
           <button
             onClick={handleIngresar}
-            className="w-full py-4 bg-[#001a3a] border border-white/30 text-white rounded text-lg hover:bg-[#003580] transition-colors mt-1"
+            disabled={loading}
+            className="w-full py-4 bg-[#001a3a] border border-white/30 text-white rounded text-lg hover:bg-[#003580] transition-colors mt-1 disabled:opacity-60 disabled:cursor-not-allowed"
             style={{ fontFamily: "'Poppins', sans-serif" }}
           >
-            Ingresar
+            {loading ? 'Ingresando...' : 'Ingresar'}
           </button>
 
           {/* Links */}
@@ -228,17 +325,18 @@ export default function Login() {
           </div>
         </div>
 
-        {/* Bottom help link */}
+        {/* Bottom help link — solo este, sin duplicado */}
         <div className="absolute bottom-4 right-6">
           <span
-            className="text-white/50 text-xs underline"
+            onClick={() => setShowHelpModal(true)}
+            className="text-white/50 text-xs underline cursor-pointer hover:text-white/80 transition-colors"
             style={{ fontFamily: "'Inter', sans-serif" }}
           >
             Necesitas ayuda tienes comentarios?
           </span>
         </div>
-      </div>
 
+      </div>
     </div>
   );
 }
