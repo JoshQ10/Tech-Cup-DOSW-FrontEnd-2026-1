@@ -413,17 +413,17 @@ El logo representa **un robot amigable apoyado sobre un balón de fútbol**: el 
 
 ## Pendiente por el Backend
 
-### 🔴 Urgente
+### Urgente
 - **`GET /api/profile`** — Actualmente solo devuelve `email`, `roles` y `authenticated`. Debe devolver el `UserResponse` completo con `firstName`, `lastName`, `username`, `role`, `id`, `photoUrl`.
 
-### 🟡 Para próximas pantallas
+### Para próximas pantallas
 - `GET /api/matches` — Próximos partidos del usuario
 - `GET /api/standings` — Tabla de posiciones
 - `GET /api/news` — Noticias y datos del torneo
 - `GET /api/invitations` — Invitaciones recibidas
 - `GET /api/calendar` — Eventos del calendario
 
-### ✅ Ya disponibles y funcionando
+### Ya disponibles y funcionando
 - `POST /api/auth/login`
 - `POST /api/auth/register`
 - `POST /api/auth/resend-verification`
