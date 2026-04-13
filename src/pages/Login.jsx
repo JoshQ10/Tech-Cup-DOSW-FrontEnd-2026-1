@@ -9,6 +9,7 @@ import campus3 from '../assets/campus/campus-3.jpg';
 import campus4 from '../assets/campus/campus-4.png';
 import campus5 from '../assets/campus/campus-5.jpg';
 import { loginUser } from '../services/api';
+import robotModal2 from '../assets/robots/curioso rb 2.png';
 
 const campusImages = [campus1, campus2, campus3, campus4, campus5];
 
@@ -44,7 +45,7 @@ export default function Login() {
     try {
       setLoading(true);
       await loginUser(email, password);
-      navigate('/seleccionar-rol');
+      navigate('/dashboard');
     } catch (error) {
       setEmailError(true);
       setPasswordError(true);
@@ -63,16 +64,29 @@ export default function Login() {
           className="absolute inset-0 z-50 flex items-center justify-center"
           style={{ background: 'rgba(0,0,0,0.45)' }}
         >
-          <div className="bg-[#e8e8e8] rounded-xl flex items-center gap-6 px-10 py-10 max-w-xl w-full mx-6">
-            <img src={robotModal} alt="Robot" className="h-40 w-auto object-contain flex-shrink-0" />
-            <div className="flex flex-col gap-8">
+
+          <div className="bg-[#e8e8e8] rounded-xl flex items-center gap-8 px-12 py-14 max-w-2xl w-full mx-6 min-h-[280px] relative overflow-visible">
+            <img
+              src={robotModal2}
+              alt="Robot"
+              className="w-auto object-contain"
+              style={{
+                position: 'absolute',
+                left: '-30px',       // qué tanto se asoma
+                bottom: '-22px',        // pegado al piso del modal
+                height: '420px',      // tamaño del robot independiente
+              }}
+            />
+
+            <div style={{ minWidth: '180px' }} />
+            <div className="flex flex-col gap-12">
               <p
                 className="text-[#002652] text-xl uppercase font-bold leading-snug"
                 style={{ fontFamily: "'Anton SC', sans-serif" }}
               >
                 Olvidaste tu contraseña no te preocupes te enviaremos un correo
               </p>
-              <div className="flex gap-4">
+              <div className="flex gap-20">
                 <button
                   className="px-6 py-3 bg-[#002652] text-white rounded text-base hover:bg-[#001a3a] transition-colors"
                   style={{ fontFamily: "'Poppins', sans-serif" }}
@@ -98,8 +112,21 @@ export default function Login() {
           className="absolute inset-0 z-50 flex items-center justify-center"
           style={{ background: 'rgba(0,0,0,0.45)' }}
         >
-          <div className="bg-[#e8e8e8] rounded-xl flex items-center gap-6 px-10 py-10 max-w-xl w-full mx-6">
-            <img src={robotModal} alt="Robot" className="h-40 w-auto object-contain flex-shrink-0" />
+          // DESPUÉS:
+          <div className="bg-[#e8e8e8] rounded-xl flex items-center gap-8 px-12 py-14 max-w-2xl w-full mx-6 min-h-[280px] relative overflow-visible">
+                      <img
+                        src={robotModal2}
+                        alt="Robot"
+                        className="w-auto object-contain"
+                        style={{
+                          position: 'absolute',
+                          left: '-30px',       // qué tanto se asoma
+                          bottom: '-22px',        // pegado al piso del modal
+                          height: '420px',      // tamaño del robot independiente
+                        }}
+                      />
+
+            <div style={{ minWidth: '180px' }} />
             <div className="flex flex-col gap-6 w-full">
               <p
                 className="text-[#002652] text-xl uppercase font-bold leading-snug"

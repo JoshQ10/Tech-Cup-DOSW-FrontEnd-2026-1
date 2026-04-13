@@ -1,0 +1,4 @@
+/* Tailwind styles are imported in index.css */
+.placeholder-focused::placeholder {
+  color: #4400FF;
+}

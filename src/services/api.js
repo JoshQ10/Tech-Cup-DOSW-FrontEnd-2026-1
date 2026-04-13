@@ -38,6 +38,13 @@ export const resendVerification = async (email) => {
   return await response.text();
 };
 
+// ── VALIDAR CÉDULA ──
+export const validarCedula = async (cedula) => {
+  const response = await authFetch(`/players/search?cedula=${cedula}`);
+  if (!response.ok) throw new Error('Cédula no encontrada');
+  return await response.json();
+};
+
 // ── HELPER — obtener token guardado ──
 export const getToken = () => localStorage.getItem('token');
 

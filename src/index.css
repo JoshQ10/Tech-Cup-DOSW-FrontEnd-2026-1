@@ -1,9 +1,0 @@
-@import "tailwindcss";
-
-.placeholder-focused::placeholder {
-  color: #4400FF;
-}
-
-.placeholder-error::placeholder {
-  color: #FF0000;
-}
