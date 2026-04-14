@@ -461,3 +461,4 @@ El logo representa **un robot amigable apoyado sobre un balón de fútbol**: el 
 <div align="center">
   <sub>TechCup Fútbol · Escuela Colombiana de Ingeniería Julio Garavito</sub>
 </div>
+
