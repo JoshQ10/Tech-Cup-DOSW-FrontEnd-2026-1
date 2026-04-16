@@ -1,6 +1,7 @@
 // src/services/api.js
-// URL base del backend — cámbiala si el back corre en otro puerto o servidor
-const BASE_URL = '/api';
+const BASE_URL = import.meta.env.VITE_API_URL
+  ? `${import.meta.env.VITE_API_URL}/api`
+  : '/api';
 
 // ── LOGIN ──
 export const loginUser = async (email, password) => {
