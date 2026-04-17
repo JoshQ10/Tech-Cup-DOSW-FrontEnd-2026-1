@@ -1,8 +1,6 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import ProtectedRoute from './ProtectedRoute';
 import RoleBasedRoute from './RoleBasedRoute';
-import { useAuthContext } from '../store/AuthContext';
-import { getRoleDashboard } from './rolePaths';
 
 import WelcomePage from '../pages/auth/WelcomePage';
 import LoginPage from '../pages/auth/LoginPage';
@@ -42,12 +40,14 @@ import Llaves from '../pages/Llaves';
 import ReglamentoPage from '../pages/shared/ReglamentoPage';
 import OAuth2CallbackPage from '../pages/shared/OAuth2CallbackPage';
 import Home from '../pages/Home';
-
-function RoleHomeRedirect() {
-  const { role } = useAuthContext();
-  if (!role) return <Navigate to="/select-role" replace />;
-  return <Navigate to={getRoleDashboard(role)} replace />;
-}
+import Dashboard from '../pages/Dashboard';
+import PerfilDeportivo from '../pages/PerfilDeportivo';
+import PerfilDeportivoUser from '../pages/PerfilDeportivoUser';
+import Calendario from '../pages/Calendario';
+import Invitaciones from '../pages/Invitaciones';
+import Reglamento from '../pages/Reglamento';
+import TablaPosiciones from '../pages/TablaPosiciones';
+import Torneo from '../pages/Torneo';
 
 export default function AppRouter() {
   return (
@@ -61,15 +61,19 @@ export default function AppRouter() {
         <Route path="/verify-email" element={<VerifyEmailPage />} />
         <Route path="/oauth2/callback" element={<OAuth2CallbackPage />} />
         <Route path="/seleccionar-rol" element={<Home />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/perfil-deportivo" element={<PerfilDeportivo />} />
+        <Route path="/perfil-deportivo-user" element={<PerfilDeportivoUser />} />
+        <Route path="/calendario" element={<Calendario />} />
+        <Route path="/invitaciones" element={<Invitaciones />} />
+        <Route path="/reglamento" element={<Reglamento />} />
+        <Route path="/tabla" element={<TablaPosiciones />} />
+        <Route path="/llaves" element={<Llaves />} />
+        <Route path="/torneo" element={<Torneo />} />
 
         {/* Alias legados */}
         <Route path="/iniciar-sesion" element={<Navigate to="/login" replace />} />
         <Route path="/registro" element={<Navigate to="/register" replace />} />
-        <Route path="/dashboard" element={<RoleHomeRedirect />} />
-        <Route path="/torneo" element={<Navigate to="/jugador/torneo" replace />} />
-        <Route path="/tabla" element={<Navigate to="/jugador/tabla-posiciones" replace />} />
-        <Route path="/llaves" element={<Navigate to="/jugador/llaves" replace />} />
-        <Route path="/reglamento" element={<Navigate to="/jugador/reglamento" replace />} />
 
         {/* Protegidas */}
         <Route element={<ProtectedRoute />}>
