@@ -392,7 +392,7 @@ export default function Login() {
                             ¿Olvidaste tu contraseña?
                         </button>
                         <button
-                            onClick={() => navigate('/register')}
+                            onClick={() => navigate('/seleccionar-rol')}
                             className="text-white/70 text-sm underline hover:text-white transition-colors"
                             style={{ fontFamily: "'Inter', sans-serif" }}
                         >

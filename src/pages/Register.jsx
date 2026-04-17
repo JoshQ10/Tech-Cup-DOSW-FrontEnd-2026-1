@@ -77,11 +77,11 @@ export default function Register() {
     }
   };
 
-  const handleConfigurarPerfil = async () => {
-    if (!validateForm()) return;
-    if (!await verificarCedula()) return;
-    navigate('/perfil-deportivo');
-  };
+   const handleConfigurarPerfil = async () => {
+     if (!validateForm()) return;
+     if (!await verificarCedula()) return;
+     navigate('/seleccionar-rol', { state: { fromRegistration: true } });
+   };
 
   const handleCrearCuenta = async () => {
     if (!validateForm()) return;
@@ -368,29 +368,29 @@ export default function Register() {
         </div>
       )}
 
-      {/* ── MODAL — Confirmación ── */}
-      {showConfirmation && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center"
-          style={{ background: 'rgba(0,0,0,0.5)' }}>
-          <div className="bg-[#e8e8e8] rounded-xl p-8 max-w-md w-full mx-4 flex flex-col items-center text-center">
-            <img src={robotFestejo} alt="Robot festejo" className="w-40 h-auto object-contain mb-4" />
-            <h2 className="text-3xl text-[#002652] uppercase leading-tight mb-1"
-              style={{ fontFamily: "'Anton SC', sans-serif" }}>Felicidades</h2>
-            <h2 className="text-2xl text-[#002652] uppercase leading-tight mb-1"
-              style={{ fontFamily: "'Anton SC', sans-serif" }}>Has creado tu cuenta</h2>
-            <h2 className="text-xl uppercase leading-tight mb-6"
-              style={{ fontFamily: "'Anton SC', sans-serif", color: config.bg }}>
-              Revisa tu bandeja de entrada
-            </h2>
-            <button
-              onClick={() => { setShowConfirmation(false); navigate('/iniciar-sesion'); }}
-              className="text-white px-10 py-2.5 rounded font-medium hover:opacity-90 transition-colors"
-              style={{ background: config.bg, fontFamily: "'Poppins', sans-serif" }}>
-              Continuar
-            </button>
-          </div>
-        </div>
-      )}
+       {/* ── MODAL — Confirmación ── */}
+       {showConfirmation && (
+         <div className="fixed inset-0 z-50 flex items-center justify-center"
+           style={{ background: 'rgba(0,0,0,0.5)' }}>
+           <div className="bg-[#e8e8e8] rounded-xl p-8 max-w-md w-full mx-4 flex flex-col items-center text-center">
+             <img src={robotFestejo} alt="Robot festejo" className="w-40 h-auto object-contain mb-4" />
+             <h2 className="text-3xl text-[#002652] uppercase leading-tight mb-1"
+               style={{ fontFamily: "'Anton SC', sans-serif" }}>Felicidades</h2>
+             <h2 className="text-2xl text-[#002652] uppercase leading-tight mb-1"
+               style={{ fontFamily: "'Anton SC', sans-serif" }}>Has creado tu cuenta</h2>
+             <h2 className="text-xl uppercase leading-tight mb-6"
+               style={{ fontFamily: "'Anton SC', sans-serif", color: config.bg }}>
+               Revisa tu bandeja de entrada
+             </h2>
+             <button
+               onClick={() => { setShowConfirmation(false); navigate('/seleccionar-rol', { state: { fromRegistration: true } }); }}
+               className="text-white px-10 py-2.5 rounded font-medium hover:opacity-90 transition-colors"
+               style={{ background: config.bg, fontFamily: "'Poppins', sans-serif" }}>
+               Continuar
+             </button>
+           </div>
+         </div>
+       )}
     </div>
   );
 }

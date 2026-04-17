@@ -41,6 +41,7 @@ import TablaPosicionesPage from '../pages/shared/TablaPosicionesPage';
 import Llaves from '../pages/Llaves';
 import ReglamentoPage from '../pages/shared/ReglamentoPage';
 import OAuth2CallbackPage from '../pages/shared/OAuth2CallbackPage';
+import Home from '../pages/Home';
 
 function RoleHomeRedirect() {
   const { role } = useAuthContext();
@@ -59,11 +60,11 @@ export default function AppRouter() {
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/verify-email" element={<VerifyEmailPage />} />
         <Route path="/oauth2/callback" element={<OAuth2CallbackPage />} />
+        <Route path="/seleccionar-rol" element={<Home />} />
 
         {/* Alias legados */}
         <Route path="/iniciar-sesion" element={<Navigate to="/login" replace />} />
         <Route path="/registro" element={<Navigate to="/register" replace />} />
-        <Route path="/seleccionar-rol" element={<Navigate to="/select-role" replace />} />
         <Route path="/dashboard" element={<RoleHomeRedirect />} />
         <Route path="/torneo" element={<Navigate to="/jugador/torneo" replace />} />
         <Route path="/tabla" element={<Navigate to="/jugador/tabla-posiciones" replace />} />
