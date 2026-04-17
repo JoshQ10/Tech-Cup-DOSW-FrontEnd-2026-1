@@ -240,3 +240,70 @@ export const confirmarLecturaReglamento = async () => {
 
   throw lastError;
 };
+
+// ── TORNEO (RESUMEN / TARJETAS / ESTADISTICAS) ──
+
+const pickFirstOkJson = async (endpoints) => {
+  let lastError = new Error('No se pudo cargar la informacion');
+
+  for (const endpoint of endpoints) {
+    try {
+      const response = await authFetch(endpoint);
+      if (!response.ok) continue;
+      return await response.json();
+    } catch (error) {
+      lastError = error;
+    }
+  }
+
+  throw lastError;
+};
+
+// Nota: estos endpoints son “best effort”. Ajusta/depura cuando el backend defina contrato final.
+const TORNEO_SUMMARY_ENDPOINTS = [
+  '/tournament/summary',
+  '/tournaments/current/summary',
+  '/tournament/current/summary',
+  '/tournament/current',
+  '/tournaments/current',
+  '/tournament',
+  '/torneo/summary',
+  '/torneo/current',
+  '/torneo',
+];
+
+export const getTournamentSummary = async () => pickFirstOkJson(TORNEO_SUMMARY_ENDPOINTS);
+
+const TORNEO_CARDS_ENDPOINTS = [
+  '/tournament/cards',
+  '/tournament/current/cards',
+  '/tournaments/current/cards',
+  '/cards/tournament',
+  '/tarjetas',
+  '/tarjetas/torneo',
+];
+
+export const getTournamentCards = async () => pickFirstOkJson(TORNEO_CARDS_ENDPOINTS);
+
+const TORNEO_STATS_SCORERS_ENDPOINTS = [
+  '/tournament/stats/scorers',
+  '/tournament/current/stats/scorers',
+  '/tournaments/current/stats/scorers',
+  '/stats/scorers',
+  '/estadisticas/goleadores',
+];
+
+export const getTournamentTopScorers = async () => pickFirstOkJson(TORNEO_STATS_SCORERS_ENDPOINTS);
+
+const TORNEO_STATS_MATCHES_ENDPOINTS = [
+  '/tournament/stats/matches',
+  '/tournament/current/stats/matches',
+  '/tournaments/current/stats/matches',
+  // Reutilizamos el endpoint que ya usa Calendario.jsx
+  '/matches',
+  '/partidos',
+  '/games',
+];
+
+export const getTournamentMatchHistory = async () => pickFirstOkJson(TORNEO_STATS_MATCHES_ENDPOINTS);
+
