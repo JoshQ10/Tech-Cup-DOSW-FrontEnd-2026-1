@@ -71,7 +71,8 @@ export default function Login() {
 
     // ── OAuth2: redirige al backend que inicia el flujo con Google ──
     const handleGoogleLogin = () => {
-        window.location.href = '/oauth2/authorization/google';
+        const backendUrl = import.meta.env.VITE_API_URL || '';
+        window.location.href = `${backendUrl}/api/auth/oauth2/google`;
     };
 
     return (

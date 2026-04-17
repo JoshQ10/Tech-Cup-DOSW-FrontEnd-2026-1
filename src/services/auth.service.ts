@@ -8,6 +8,7 @@ import type {
   UserRole,
   UserType,
 } from '../types/auth.types';
+import { fromBackendRole, fromBackendUserType, toBackendRole, toBackendUserType } from '../types/auth.types';
 
 export interface RefreshTokenRequest {
   refreshToken: string;
@@ -24,53 +25,63 @@ export interface NotificationCountResponse {
 }
 
 const normalizeUserProfile = (payload: Record<string, unknown>): UserProfile => {
-  const role = (payload.role || payload.rol || 'JUGADOR') as UserRole;
-  const tipo = (payload.tipo || payload.userType || 'INTERNO') as UserType;
+  const rawRole = String(payload.role || payload.rol || 'PLAYER');
+  const rawType = String(payload.tipo || payload.userType || 'INTERNAL');
 
   return {
     id: String(payload.id || payload.userId || payload.uuid || ''),
-    nombre: String(payload.nombre || payload.firstName || payload.name || ''),
-    apellido: String(payload.apellido || payload.lastName || ''),
+    nombre: String(payload.firstName || payload.nombre || payload.name || ''),
+    apellido: String(payload.lastName || payload.apellido || ''),
     username: String(payload.username || payload.userName || ''),
     email: String(payload.email || ''),
-    role,
-    tipo,
+    role: fromBackendRole(rawRole),
+    tipo: fromBackendUserType(rawType),
     profileComplete: Boolean(payload.profileComplete ?? true),
   };
 };
 
 export const authService = {
   async login(payload: LoginRequest): Promise<LoginResponse> {
-    const { data } = await apiClient.post<LoginResponse | Record<string, unknown>>('/api/auth/login', {
+    const { data } = await apiClient.post<Record<string, unknown>>('/api/auth/login', {
       emailOrUsername: payload.emailOrUsername,
       email: payload.emailOrUsername,
       username: payload.emailOrUsername,
       password: payload.password,
     });
 
-    if ('accessToken' in data && 'user' in data) {
-      return data as LoginResponse;
-    }
-
     const raw = data as Record<string, unknown>;
     const accessToken = String(raw.accessToken || raw.token || '');
     const refreshToken = String(raw.refreshToken || raw.refresh_token || '');
 
-    let user = raw.user as UserProfile | undefined;
-    if (!user && accessToken) {
-      const profile = await authService.getMyProfile();
-      user = profile;
+    let user: UserProfile;
+    if (raw.user && typeof raw.user === 'object') {
+      user = normalizeUserProfile(raw.user as Record<string, unknown>);
+    } else if (accessToken) {
+      try {
+        user = await authService.getMyProfile();
+      } catch {
+        user = normalizeUserProfile(raw);
+      }
+    } else {
+      user = normalizeUserProfile(raw);
     }
 
-    return {
-      accessToken,
-      refreshToken,
-      user: user || normalizeUserProfile(raw),
-    };
+    return { accessToken, refreshToken, user };
   },
 
   async register(payload: RegisterRequest): Promise<MessageResponse> {
-    const { data } = await apiClient.post<MessageResponse>('/api/auth/register', payload);
+    const { data } = await apiClient.post<MessageResponse>('/api/auth/register', {
+      firstName: payload.nombre,
+      lastName: payload.apellido,
+      username: payload.username,
+      email: payload.email,
+      password: payload.password,
+      confirmPassword: payload.confirmPassword,
+      role: toBackendRole(payload.role),
+      userType: toBackendUserType(payload.tipo),
+      relationshipType: payload.relationshipType,
+      relationshipDescription: payload.relationshipDescription,
+    });
     return data;
   },
 
@@ -94,7 +105,7 @@ export const authService = {
   },
 
   async setUserRole(userId: string, role: UserRole): Promise<MessageResponse> {
-    const { data } = await apiClient.put<MessageResponse>(`/api/users/${userId}/role`, { role });
+    const { data } = await apiClient.put<MessageResponse>(`/api/users/${userId}/role`, { role: toBackendRole(role) });
     return data;
   },
 

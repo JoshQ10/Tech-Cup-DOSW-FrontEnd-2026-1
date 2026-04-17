@@ -9,6 +9,7 @@ import robotAdmin from '../assets/robots/robot admin.png';
 import robotArbitro from '../assets/robots/robot arbitro.png';
 import robotOrganizador from '../assets/robots/robot organizador.png';
 import { validarCedula } from '../services/api';
+import { authService } from '../services/auth.service';
 
 const roleConfig = {
   Jugador:       { bg: '#002652', robotTop: robotCabeza,     robotBottom: robotCurioso    },
@@ -26,6 +27,15 @@ export default function Register() {
 
   const esCedulaRol = selectedRole === 'Organizador' || selectedRole === 'Arbitro' || selectedRole === 'Administrador';
 
+  // Mapear nombre de rol del formulario al UserRole del sistema
+  const roleMap = {
+    Jugador: 'JUGADOR',
+    Capitan: 'CAPITAN',
+    Administrador: 'ADMINISTRADOR',
+    Arbitro: 'ARBITRO',
+    Organizador: 'ORGANIZADOR',
+  };
+
   const [form, setForm] = useState({
     nombre: '', apellido: '', usuario: '', correo: '',
     contrasena: '', confirmarContrasena: '',
@@ -38,6 +48,8 @@ export default function Register() {
   const [relacion, setRelacion] = useState('');
   const [relacionOpcion, setRelacionOpcion] = useState('');
   const [modalError, setModalError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [registerError, setRegisterError] = useState('');
 
   const handleChange = (field, value) => {
     setForm(prev => ({ ...prev, [field]: value }));
@@ -77,16 +89,41 @@ export default function Register() {
     }
   };
 
-   const handleConfigurarPerfil = async () => {
-     if (!validateForm()) return;
-     if (!await verificarCedula()) return;
-     navigate('/seleccionar-rol', { state: { fromRegistration: true } });
-   };
+  const callRegisterAPI = async () => {
+    setLoading(true);
+    setRegisterError('');
+    try {
+      await authService.register({
+        nombre: form.nombre,
+        apellido: form.apellido,
+        username: form.usuario,
+        email: form.correo,
+        password: form.contrasena,
+        confirmPassword: form.confirmarContrasena,
+        role: roleMap[selectedRole] || 'JUGADOR',
+        tipo: form.tipoUsuario === 'Interno' ? 'INTERNO' : 'EXTERNO',
+        relationshipType: relacionOpcion || undefined,
+        relationshipDescription: relacion || undefined,
+      });
+      setShowConfirmation(true);
+    } catch (err) {
+      const msg = err?.response?.data?.message || err?.message || 'Error al registrarse';
+      setRegisterError(msg);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleConfigurarPerfil = async () => {
+    if (!validateForm()) return;
+    if (!await verificarCedula()) return;
+    await callRegisterAPI();
+  };
 
   const handleCrearCuenta = async () => {
     if (!validateForm()) return;
     if (!await verificarCedula()) return;
-    setShowConfirmation(true);
+    await callRegisterAPI();
   };
 
   const handleEnviarModal = () => {
@@ -264,23 +301,33 @@ export default function Register() {
               </div>
             )}
 
+            {/* Error general */}
+            {registerError && (
+              <div className="bg-red-500/20 border border-red-400 text-red-200 px-4 py-3 rounded text-sm"
+                style={{ fontFamily: "'Inter', sans-serif" }}>
+                {registerError}
+              </div>
+            )}
+
             {/* Botón */}
             <div className="mt-4">
               {selectedRole === 'Jugador' || selectedRole === 'Capitan' ? (
                 <button
                   onClick={handleConfigurarPerfil}
-                  className="border-2 border-white px-8 py-3 rounded text-white hover:bg-white/10 transition-colors text-base"
+                  disabled={loading}
+                  className="border-2 border-white px-8 py-3 rounded text-white hover:bg-white/10 transition-colors text-base disabled:opacity-60 disabled:cursor-not-allowed"
                   style={{ fontFamily: "'Poppins', sans-serif" }}
                 >
-                  Configurar Perfil Deportivo
+                  {loading ? 'Registrando...' : 'Configurar Perfil Deportivo'}
                 </button>
               ) : (
                 <button
                   onClick={handleCrearCuenta}
-                  className="border-2 border-white px-8 py-3 rounded text-white hover:bg-white/10 transition-colors text-base"
+                  disabled={loading}
+                  className="border-2 border-white px-8 py-3 rounded text-white hover:bg-white/10 transition-colors text-base disabled:opacity-60 disabled:cursor-not-allowed"
                   style={{ fontFamily: "'Poppins', sans-serif" }}
                 >
-                  Crear Cuenta
+                  {loading ? 'Registrando...' : 'Crear Cuenta'}
                 </button>
               )}
             </div>
@@ -383,10 +430,10 @@ export default function Register() {
                Revisa tu bandeja de entrada
              </h2>
              <button
-               onClick={() => { setShowConfirmation(false); navigate('/seleccionar-rol', { state: { fromRegistration: true } }); }}
+               onClick={() => { setShowConfirmation(false); navigate('/login'); }}
                className="text-white px-10 py-2.5 rounded font-medium hover:opacity-90 transition-colors"
                style={{ background: config.bg, fontFamily: "'Poppins', sans-serif" }}>
-               Continuar
+               Ir a Iniciar Sesion
              </button>
            </div>
          </div>
