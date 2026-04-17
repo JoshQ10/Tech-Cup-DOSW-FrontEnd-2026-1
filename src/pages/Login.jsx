@@ -22,15 +22,6 @@ const GoogleIcon = () => (
         <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
     </svg>
 );
-
-const MicrosoftIcon = () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-        <rect x="1" y="1" width="10.5" height="10.5" fill="#F25022"/>
-        <rect x="12.5" y="1" width="10.5" height="10.5" fill="#7FBA00"/>
-        <rect x="1" y="12.5" width="10.5" height="10.5" fill="#00A4EF"/>
-        <rect x="12.5" y="12.5" width="10.5" height="10.5" fill="#FFB900"/>
-    </svg>
-);
 // ────────────────────────────────────────────────────────────────────────────
 
 export default function Login() {
@@ -78,11 +69,6 @@ export default function Login() {
     // ── OAuth2: redirige al backend que inicia el flujo con Google ──
     const handleGoogleLogin = () => {
         window.location.href = '/oauth2/authorization/google';
-    };
-
-    // ── Microsoft: el back no lo tiene aún, mostrar aviso ──
-    const handleMicrosoftLogin = () => {
-        alert('El acceso con Microsoft estará disponible próximamente.');
     };
 
     return (
@@ -390,26 +376,6 @@ export default function Login() {
                         >
                             <GoogleIcon />
                             Google
-                        </button>
-
-                        {/* Microsoft */}
-                        <button
-                            onClick={handleMicrosoftLogin}
-                            className="flex-1 flex items-center justify-center gap-3 py-3 rounded transition-colors"
-                            style={{
-                                fontFamily: "'Poppins', sans-serif",
-                                background: 'rgba(255,255,255,0.95)',
-                                color: '#374151',
-                                fontSize: '14px',
-                                fontWeight: 500,
-                                border: '2px solid transparent',
-                                opacity: 0.65,
-                                cursor: 'not-allowed',
-                            }}
-                            title="Próximamente"
-                        >
-                            <MicrosoftIcon />
-                            Microsoft
                         </button>
                     </div>
 
