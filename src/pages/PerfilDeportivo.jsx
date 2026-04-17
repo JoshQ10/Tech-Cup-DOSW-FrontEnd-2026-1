@@ -305,7 +305,7 @@ export default function PerfilDeportivo() {
         {showConfirmacion && (
             <PopConfirmacion
                 bgColor="#002652"
-                onContinuar={() => { setShowConfirmacion(false); navigate('/iniciar-sesion'); }}
+                  onContinuar={() => { setShowConfirmacion(false); navigate('/seleccionar-rol'); }}
             />
         )}
 

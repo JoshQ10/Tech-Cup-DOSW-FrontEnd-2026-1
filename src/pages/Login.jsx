@@ -8,7 +8,7 @@ import campus2 from '../assets/campus/campus-2.jpg';
 import campus3 from '../assets/campus/campus-3.jpg';
 import campus4 from '../assets/campus/campus-4.png';
 import campus5 from '../assets/campus/campus-5.jpg';
-import { loginUser } from '../services/api';
+import { useAuth } from '../hooks/useAuth';
 import robotModal2 from '../assets/robots/curioso rb 2.png';
 
 const campusImages = [campus1, campus2, campus3, campus4, campus5];
@@ -26,6 +26,7 @@ const GoogleIcon = () => (
 
 export default function Login() {
     const navigate = useNavigate();
+    const { login } = useAuth();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [currentImage, setCurrentImage] = useState(0);
@@ -55,8 +56,10 @@ export default function Login() {
 
         try {
             setLoading(true);
-            await loginUser(email, password);
-            navigate('/dashboard');
+            await login({
+                emailOrUsername: email.trim(),
+                password,
+            });
         } catch (error) {
             setEmailError(true);
             setPasswordError(true);
@@ -214,7 +217,7 @@ export default function Login() {
                             className="text-2xl lg:text-4xl text-white uppercase leading-tight"
                             style={{ fontFamily: "'Anton SC', sans-serif", textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}
                         >
-                            ¿Que Tal Tu Dia?
+                            ¿Que Tal Tu Dia hoy?
                         </h2>
                     </div>
                 </div>
