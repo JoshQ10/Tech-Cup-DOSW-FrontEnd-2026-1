@@ -40,8 +40,49 @@ const normalizeUserProfile = (payload: Record<string, unknown>): UserProfile => 
   };
 };
 
+// Token mock con exp año 2030 — solo para usuarios de prueba locales
+const MOCK_TOKEN =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.' +
+  btoa(JSON.stringify({ sub: 'mock', exp: 1893456000 })).replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_') +
+  '.mock-signature';
+
+const MOCK_USERS: Record<string, LoginResponse> = {
+  'admin@test.com': {
+    accessToken: MOCK_TOKEN,
+    refreshToken: MOCK_TOKEN,
+    user: { id: 'mock-1', nombre: 'Admin', apellido: 'Test', username: 'admin_test', email: 'admin@test.com', role: 'ADMINISTRADOR', tipo: 'INTERNO', profileComplete: true },
+  },
+  'organizador@test.com': {
+    accessToken: MOCK_TOKEN,
+    refreshToken: MOCK_TOKEN,
+    user: { id: 'mock-2', nombre: 'Organizador', apellido: 'Test', username: 'org_test', email: 'organizador@test.com', role: 'ORGANIZADOR', tipo: 'INTERNO', profileComplete: true },
+  },
+  'arbitro@test.com': {
+    accessToken: MOCK_TOKEN,
+    refreshToken: MOCK_TOKEN,
+    user: { id: 'mock-3', nombre: 'Arbitro', apellido: 'Test', username: 'arbitro_test', email: 'arbitro@test.com', role: 'ARBITRO', tipo: 'INTERNO', profileComplete: true },
+  },
+  'capitan@test.com': {
+    accessToken: MOCK_TOKEN,
+    refreshToken: MOCK_TOKEN,
+    user: { id: 'mock-4', nombre: 'Capitan', apellido: 'Test', username: 'capitan_test', email: 'capitan@test.com', role: 'CAPITAN', tipo: 'INTERNO', profileComplete: true },
+  },
+  'jugador@test.com': {
+    accessToken: MOCK_TOKEN,
+    refreshToken: MOCK_TOKEN,
+    user: { id: 'mock-5', nombre: 'Jugador', apellido: 'Test', username: 'jugador_test', email: 'jugador@test.com', role: 'JUGADOR', tipo: 'INTERNO', profileComplete: true },
+  },
+};
+
+const MOCK_PASSWORD = 'test1234';
+
 export const authService = {
   async login(payload: LoginRequest): Promise<LoginResponse> {
+    const mockUser = MOCK_USERS[payload.emailOrUsername.toLowerCase()];
+    if (mockUser && payload.password === MOCK_PASSWORD) {
+      return mockUser;
+    }
+
     const { data } = await apiClient.post<Record<string, unknown>>('/api/auth/login', {
       emailOrUsername: payload.emailOrUsername,
       email: payload.emailOrUsername,
