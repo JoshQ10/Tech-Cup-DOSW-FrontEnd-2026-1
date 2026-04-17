@@ -1,396 +1,282 @@
-import { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import robotCabeza from '../assets/robots/robot-cabeza.png';
-import robotCurioso from '../assets/robots/robot-curioso.png';
-import robotPensativo from '../assets/robots/robot-pensativo.png';
-import robotFestejo from '../assets/robots/robot-festejo.png';
-import robotCapitan from '../assets/robots/robot capitan.png';
-import robotAdmin from '../assets/robots/robot admin.png';
-import robotArbitro from '../assets/robots/robot arbitro.png';
-import robotOrganizador from '../assets/robots/robot organizador.png';
-import { validarCedula } from '../services/api';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import logoTCFConLetras from '../assets/logos/LOGO FUTBOLL F Letras blancas.png';
+import robotSaludo from '../assets/robots/robot saludando.gif';
+import campus1 from '../assets/campus/campus-1.jpg';
+import campus2 from '../assets/campus/campus-2.jpg';
+import campus3 from '../assets/campus/campus-3.jpg';
+import campus4 from '../assets/campus/campus-4.png';
+import campus5 from '../assets/campus/campus-5.jpg';
+import { loginUser } from '../services/api';
+import robotModal2 from '../assets/robots/curioso rb 2.png';
 
-const roleConfig = {
-  Jugador:       { bg: '#002652', robotTop: robotCabeza,     robotBottom: robotCurioso    },
-  Capitan:       { bg: '#01540D', robotTop: robotCabeza,     robotBottom: robotCapitan    },
-  Administrador: { bg: '#50070C', robotTop: robotCabeza,     robotBottom: robotAdmin      },
-  Arbitro:       { bg: '#514F01', robotTop: robotCabeza,     robotBottom: robotArbitro    },
-  Organizador:   { bg: '#260053', robotTop: robotCabeza,     robotBottom: robotOrganizador },
-};
+const campusImages = [campus1, campus2, campus3, campus4, campus5];
 
-export default function Register() {
+// ── Iconos SVG inline ──────────────────────────────────────────────────────
+const GoogleIcon = () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+      <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+      <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+      <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+      <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+    </svg>
+);
+
+const MicrosoftIcon = () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+      <rect x="1" y="1" width="10.5" height="10.5" fill="#F25022"/>
+      <rect x="12.5" y="1" width="10.5" height="10.5" fill="#7FBA00"/>
+      <rect x="1" y="12.5" width="10.5" height="10.5" fill="#00A4EF"/>
+      <rect x="12.5" y="12.5" width="10.5" height="10.5" fill="#FFB900"/>
+    </svg>
+);
+
+export default function Login() {
   const navigate = useNavigate();
-  const location = useLocation();
-  const selectedRole = location.state?.role || 'Jugador';
-  const config = roleConfig[selectedRole] || roleConfig.Jugador;
-
-  const esCedulaRol = selectedRole === 'Organizador' || selectedRole === 'Arbitro' || selectedRole === 'Administrador';
-
-  const [form, setForm] = useState({
-    nombre: '', apellido: '', usuario: '', correo: '',
-    contrasena: '', confirmarContrasena: '',
-    tipoUsuario: selectedRole === 'Capitan' ? 'Interno' : '',
-  });
-  const [errors, setErrors] = useState({});
-  const [showDropdown, setShowDropdown] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [currentImage, setCurrentImage] = useState(0);
+  const [emailError, setEmailError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+  const [loginError, setLoginError] = useState('');
+  const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [showConfirmation, setShowConfirmation] = useState(false);
-  const [relacion, setRelacion] = useState('');
-  const [relacionOpcion, setRelacionOpcion] = useState('');
-  const [modalError, setModalError] = useState('');
+  const [showHelpModal, setShowHelpModal] = useState(false);
+  const [helpText, setHelpText] = useState('');
 
-  const handleChange = (field, value) => {
-    setForm(prev => ({ ...prev, [field]: value }));
-    setErrors(prev => ({ ...prev, [field]: '' }));
-  };
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImage((prev) => (prev + 1) % campusImages.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
-  const handleTipoUsuario = (tipo) => {
-    handleChange('tipoUsuario', tipo);
-    setShowDropdown(false);
-    if (tipo === 'Externo') setShowModal(true);
-  };
+  const handleIngresar = async () => {
+    const eErr = email.trim() === '';
+    const pErr = password.trim() === '';
+    setEmailError(eErr);
+    setPasswordError(pErr);
+    setLoginError('');
 
-  const validateForm = () => {
-    const newErrors = {};
-    if (!form.nombre.trim())              newErrors.nombre = 'Campo requerido';
-    if (!form.apellido.trim())            newErrors.apellido = 'Campo requerido';
-    if (!form.usuario.trim())             newErrors.usuario = 'Campo requerido';
-    if (!form.correo.trim())              newErrors.correo = 'Campo requerido';
-    if (!form.contrasena.trim())          newErrors.contrasena = 'Campo requerido';
-    if (!form.confirmarContrasena.trim()) newErrors.confirmarContrasena = 'Campo requerido';
-    if (form.contrasena && form.confirmarContrasena && form.contrasena !== form.confirmarContrasena)
-      newErrors.confirmarContrasena = 'Las contraseñas no coinciden';
-    if (selectedRole !== 'Capitan' && !form.tipoUsuario)
-      newErrors.tipoUsuario = 'Selecciona un tipo de usuario';
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+    if (eErr || pErr) return;
 
-  const verificarCedula = async () => {
-    if (!esCedulaRol) return true;
     try {
-      await validarCedula(form.correo);
-      return true;
-    } catch {
-      setErrors(prev => ({ ...prev, correo: 'Cédula en base de datos no encontrada' }));
-      return false;
+      setLoading(true);
+      await loginUser(email, password);
+      navigate('/dashboard');
+    } catch (error) {
+      setEmailError(true);
+      setPasswordError(true);
+      setLoginError('Usuario o contraseña incorrectos');
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleConfigurarPerfil = async () => {
-    if (!validateForm()) return;
-    if (!await verificarCedula()) return;
-    navigate('/perfil-deportivo');
+  const handleGoogleLogin = () => {
+    window.location.href = '/oauth2/authorization/google';
   };
 
-  const handleCrearCuenta = async () => {
-    if (!validateForm()) return;
-    if (!await verificarCedula()) return;
-    setShowConfirmation(true);
+  const handleMicrosoftLogin = () => {
+    alert('El acceso con Microsoft estará disponible próximamente.');
   };
-
-  const handleEnviarModal = () => {
-    if (!relacionOpcion) { setModalError('Debes seleccionar una opción'); return; }
-    if (!relacion.trim()) { setModalError('Debes escribir tu relación con la escuela'); return; }
-    setModalError('');
-    setShowModal(false);
-  };
-
-  const inputStyle = (field) => ({
-    fontFamily: "'Inter', sans-serif",
-    borderRadius: '8px',
-    border: errors[field] ? '2px solid #FF0000' : '2px solid transparent',
-    background: errors[field] ? '#fff0f0' : 'rgba(255,255,255,0.92)',
-    color: errors[field] ? '#FF0000' : '#374151',
-  });
-
-  const inputClass = "w-full px-4 py-3 outline-none text-sm";
 
   return (
-    <div className="min-h-screen w-full flex overflow-hidden relative">
+      <div className="flex h-screen w-full overflow-hidden relative">
 
-      {/* ── FRANJA IZQUIERDA blanca con robot arriba ── */}
-      <div className="hidden md:flex w-48 lg:w-56 flex-shrink-0 flex-col items-center justify-start pt-0 relative"
-        style={{ background: 'white' }}>
-        <img src={config.robotTop} alt="Robot"
-          className="w-full object-contain"
-          style={{ marginTop: '-10px' }} />
-      </div>
+        {/* ── MODAL olvide contraseña ── */}
+        {showModal && (
+            <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/45">
+              <div className="bg-[#e8e8e8] rounded-xl flex items-center gap-8 px-12 py-14 max-w-2xl w-full mx-6 min-h-[280px] relative">
+                <img
+                    src={robotModal2}
+                    alt="Robot"
+                    className="w-auto object-contain absolute"
+                    style={{ left: '-30px', bottom: '-22px', height: '420px' }}
+                />
+                <div style={{ minWidth: '180px' }} />
+                <div className="flex flex-col gap-12">
+                  <p className="text-[#002652] text-xl uppercase font-bold leading-snug" style={{ fontFamily: "'Anton SC', sans-serif" }}>
+                    Olvidaste tu contraseña no te preocupes te enviaremos un correo
+                  </p>
+                  <div className="flex gap-20">
+                    <button className="px-6 py-3 bg-[#002652] text-white rounded hover:bg-[#001a3a] transition-colors font-poppins">
+                      Enviar Correo
+                    </button>
+                    <button onClick={() => setShowModal(false)} className="px-6 py-3 bg-[#001a3a] text-white rounded hover:bg-[#002652] transition-colors font-poppins">
+                      No
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+        )}
 
-      {/* ── CENTRO — color del rol ── */}
-      <div className="flex-1 flex flex-col relative overflow-hidden"
-        style={{ backgroundColor: config.bg }}>
+        {/* ── MODAL ayuda/comentarios ── */}
+        {showHelpModal && (
+            <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/45">
+              <div className="bg-[#e8e8e8] rounded-xl flex items-center gap-8 px-12 py-14 max-w-2xl w-full mx-6 min-h-[280px] relative">
+                <img
+                    src={robotModal2}
+                    alt="Robot"
+                    className="w-auto object-contain absolute"
+                    style={{ left: '-30px', bottom: '-22px', height: '420px' }}
+                />
+                <div style={{ minWidth: '180px' }} />
+                <div className="flex flex-col gap-6 w-full">
+                  <p className="text-[#002652] text-xl uppercase font-bold leading-snug" style={{ fontFamily: "'Anton SC', sans-serif" }}>
+                    Apreciamos tus comentarios
+                  </p>
+                  <textarea
+                      value={helpText}
+                      onChange={(e) => setHelpText(e.target.value)}
+                      placeholder="Escribe tu comentario aquí..."
+                      rows={4}
+                      className="w-full px-4 py-3 rounded text-sm text-gray-700 placeholder-gray-400 outline-none resize-none bg-white/90 border-2 border-transparent focus:border-[#4400FF]"
+                  />
+                  <div className="flex gap-4">
+                    <button onClick={() => { setHelpText(''); setShowHelpModal(false); }} className="px-6 py-3 bg-[#002652] text-white rounded hover:bg-[#001a3a] transition-colors font-poppins">
+                      Enviar
+                    </button>
+                    <button onClick={() => { setHelpText(''); setShowHelpModal(false); }} className="px-6 py-3 bg-[#001a3a] text-white rounded hover:bg-[#002652] transition-colors font-poppins">
+                      Salir
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+        )}
 
-        {/* Flecha atrás */}
-        <button
-          onClick={() => navigate('/seleccionar-rol')}
-          className="absolute top-8 left-6 z-20 text-white hover:text-gray-300 transition-colors"
-        >
-          <svg className="w-9 h-9" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-          </svg>
-        </button>
+        {/* ── LEFT — Campus + Robot ── */}
+        <div className="hidden md:flex w-1/2 relative items-end justify-start overflow-hidden">
+          {campusImages.map((img, index) => (
+              <div
+                  key={index}
+                  className="absolute inset-0 bg-cover bg-center transition-opacity duration-1000"
+                  style={{
+                    backgroundImage: `url(${img})`,
+                    opacity: index === currentImage ? 0.55 : 0,
+                  }}
+              />
+          ))}
+          <div className="relative z-10 flex items-end gap-6 px-10 pb-0 w-full">
+            <div className="flex-shrink-0 overflow-hidden" style={{ height: '55vh' }}>
+              <img
+                  src={robotSaludo}
+                  alt="Robot saludando"
+                  className="w-auto object-contain object-top drop-shadow-2xl"
+                  style={{ height: '90vh', marginTop: '-10vh' }}
+              />
+            </div>
+            <div className="flex flex-col mb-[30vh]">
+              <h2 className="text-3xl lg:text-5xl text-white uppercase leading-tight font-anton shadow-text">
+                Hola Cómo Estás
+              </h2>
+              <h2 className="text-2xl lg:text-4xl text-white uppercase leading-tight font-anton shadow-text">
+                ¿Qué Tal Tu Día?
+              </h2>
+            </div>
+          </div>
+        </div>
 
-        {/* Formulario */}
-        <div className="flex-1 flex flex-col items-center justify-center px-8 py-12">
-          <div className="w-full max-w-2xl mb-8">
-            <h1 className="text-2xl md:text-3xl" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 300 }}>
-              <span className="text-white font-light">Bienvenido a nuestra familia </span>
-              <span className="text-white" style={{ fontFamily: "'Anton SC', sans-serif" }}>TechCup Futbol</span>
-            </h1>
+        {/* ── RIGHT — Login form ── */}
+        <div className="w-full md:w-1/2 bg-[#002652] flex flex-col justify-center px-10 md:px-14">
+
+          {/* Title + Logo */}
+          <div className="flex items-center justify-start gap-3 mb-10">
+                    <span className="text-white text-xl font-inter font-light">
+                        Iniciar sesión en
+                    </span>
+            <span className="text-white text-3xl uppercase font-anton">
+                        TechCup Fútbol
+                    </span>
+            <img src={logoTCFConLetras} alt="TCF" className="h-20 w-auto" />
           </div>
 
-          <div className="w-full max-w-2xl flex flex-col gap-4">
+          {/* Form */}
+          <div className="flex flex-col gap-6 w-full">
 
-            {/* Nombre + Apellido */}
-            <div className="flex gap-4">
-              <div className="flex-1">
-                <label className={`block text-sm font-medium mb-1 ${errors.nombre ? 'text-red-400' : 'text-white'}`}
-                  style={{ fontFamily: "'Inter', sans-serif" }}>Nombre</label>
-                <input type="text" placeholder="Escriba su Nombre"
-                  value={form.nombre} onChange={e => handleChange('nombre', e.target.value)}
-                  className={inputClass} style={inputStyle('nombre')}
-                  onFocus={e => { if (!errors.nombre) e.target.style.border = '2px solid #4400FF'; }}
-                  onBlur={e => { if (!errors.nombre) e.target.style.border = '2px solid transparent'; }}
-                />
-                {errors.nombre && <span className="text-red-400 text-xs mt-1 block">{errors.nombre}</span>}
-              </div>
-              <div className="w-[45%]">
-                <label className={`block text-sm font-medium mb-1 ${errors.apellido ? 'text-red-400' : 'text-white'}`}
-                  style={{ fontFamily: "'Inter', sans-serif" }}>Apellidos</label>
-                <input type="text" placeholder="Escriba su Apellido"
-                  value={form.apellido} onChange={e => handleChange('apellido', e.target.value)}
-                  className={inputClass} style={inputStyle('apellido')}
-                  onFocus={e => { if (!errors.apellido) e.target.style.border = '2px solid #4400FF'; }}
-                  onBlur={e => { if (!errors.apellido) e.target.style.border = '2px solid transparent'; }}
-                />
-                {errors.apellido && <span className="text-red-400 text-xs mt-1 block">{errors.apellido}</span>}
-              </div>
-            </div>
-
-            {/* Usuario */}
+            {/* Email */}
             <div>
-              <label className={`block text-sm font-medium mb-1 ${errors.usuario ? 'text-red-400' : 'text-white'}`}
-                style={{ fontFamily: "'Inter', sans-serif" }}>Usuario</label>
-              <input type="text" placeholder="Nombre usuario"
-                value={form.usuario} onChange={e => handleChange('usuario', e.target.value)}
-                className={inputClass} style={inputStyle('usuario')}
-                onFocus={e => { if (!errors.usuario) e.target.style.border = '2px solid #4400FF'; }}
-                onBlur={e => { if (!errors.usuario) e.target.style.border = '2px solid transparent'; }}
-              />
-              {errors.usuario && <span className="text-red-400 text-xs mt-1 block">{errors.usuario}</span>}
-            </div>
-
-            {/* Correo o Cédula */}
-            <div>
-              <label className={`block text-sm font-medium mb-1 ${errors.correo ? 'text-red-400' : 'text-white'}`}
-                style={{ fontFamily: "'Inter', sans-serif" }}>
-                {esCedulaRol ? 'Número de Cédula' : 'Correo'}
+              <label className={`block text-sm font-medium mb-2 font-inter ${emailError ? 'text-[#FF0000]' : 'text-white'}`}>
+                Email / Usuario
               </label>
               <input
-                type={esCedulaRol ? 'text' : 'email'}
-                placeholder={esCedulaRol ? 'Número de Cédula' : 'Correo'}
-                value={form.correo} onChange={e => handleChange('correo', e.target.value)}
-                className={inputClass} style={inputStyle('correo')}
-                onFocus={e => { if (!errors.correo) e.target.style.border = '2px solid #4400FF'; }}
-                onBlur={e => { if (!errors.correo) e.target.style.border = '2px solid transparent'; }}
+                  type="text"
+                  placeholder="User Name"
+                  value={email}
+                  onChange={(e) => { setEmail(e.target.value); setEmailError(false); setLoginError(''); }}
+                  className={`w-full px-4 py-4 outline-none text-sm rounded-md bg-white/90 transition-all ${emailError ? 'border-2 border-[#FF0000] text-[#FF0000]' : 'border-2 border-transparent focus:border-[#4400FF] text-gray-700'}`}
               />
-              {errors.correo && <span className="text-red-400 text-xs mt-1 block">{errors.correo}</span>}
+              {emailError && <span className="text-[#FF0000] text-xs mt-1 block font-inter">{loginError || 'Campo requerido'}</span>}
             </div>
 
-            {/* Contraseña */}
+            {/* Password */}
             <div>
-              <label className={`block text-sm font-medium mb-1 ${errors.contrasena ? 'text-red-400' : 'text-white'}`}
-                style={{ fontFamily: "'Inter', sans-serif" }}>Contraseña</label>
-              <input type="password" placeholder="Contraseña"
-                value={form.contrasena} onChange={e => handleChange('contrasena', e.target.value)}
-                className={inputClass} style={inputStyle('contrasena')}
-                onFocus={e => { if (!errors.contrasena) e.target.style.border = '2px solid #4400FF'; }}
-                onBlur={e => { if (!errors.contrasena) e.target.style.border = '2px solid transparent'; }}
+              <label className={`block text-sm font-medium mb-2 font-inter ${passwordError ? 'text-[#FF0000]' : 'text-white'}`}>
+                Contraseña
+              </label>
+              <input
+                  type="password"
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => { setPassword(e.target.value); setPasswordError(false); setLoginError(''); }}
+                  className={`w-full px-4 py-4 outline-none text-sm rounded-md bg-white/90 transition-all ${passwordError ? 'border-2 border-[#FF0000] text-[#FF0000]' : 'border-2 border-transparent focus:border-[#4400FF] text-gray-700'}`}
               />
-              {errors.contrasena && <span className="text-red-400 text-xs mt-1 block">{errors.contrasena}</span>}
+              {passwordError && <span className="text-[#FF0000] text-xs mt-1 block font-inter">{loginError || 'Campo requerido'}</span>}
             </div>
 
-            {/* Confirmar Contraseña */}
-            <div>
-              <label className={`block text-sm font-medium mb-1 ${errors.confirmarContrasena ? 'text-red-400' : 'text-white'}`}
-                style={{ fontFamily: "'Inter', sans-serif" }}>Confirmar Contraseña</label>
-              <input type="password" placeholder="Confirmar Contraseña"
-                value={form.confirmarContrasena} onChange={e => handleChange('confirmarContrasena', e.target.value)}
-                className={inputClass} style={inputStyle('confirmarContrasena')}
-                onFocus={e => { if (!errors.confirmarContrasena) e.target.style.border = '2px solid #4400FF'; }}
-                onBlur={e => { if (!errors.confirmarContrasena) e.target.style.border = '2px solid transparent'; }}
-              />
-              {errors.confirmarContrasena && <span className="text-red-400 text-xs mt-1 block">{errors.confirmarContrasena}</span>}
-            </div>
-
-            {/* Tipo de usuario */}
-            {selectedRole !== 'Capitan' && (
-              <div className="flex items-center gap-4 mt-1">
-                <span className={`text-sm font-medium whitespace-nowrap ${errors.tipoUsuario ? 'text-red-400' : 'text-white'}`}
-                  style={{ fontFamily: "'Inter', sans-serif" }}>
-                  Tipo de usuario
-                </span>
-                <div className="relative">
-                  <button
-                    onClick={() => setShowDropdown(!showDropdown)}
-                    className="flex items-center gap-3 rounded px-6 py-2.5 text-white min-w-[220px] justify-between"
-                    style={{
-                      fontFamily: "'Poppins', sans-serif",
-                      background: `${config.bg}CC`,
-                      border: errors.tipoUsuario ? '2px solid #FF0000' : '1px solid rgba(255,255,255,0.5)',
-                    }}
-                  >
-                    <span className="italic">{form.tipoUsuario || 'Seleccione Uno'}</span>
-                    <svg className={`w-5 h-5 transition-transform ${showDropdown ? 'rotate-180' : ''}`}
-                      fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
-                  {showDropdown && (
-                    <div className="absolute top-full left-0 w-full border border-white/30 rounded mt-1 z-30 overflow-hidden"
-                      style={{ background: config.bg }}>
-                      {['Interno', 'Externo'].map(tipo => (
-                        <button key={tipo} onClick={() => handleTipoUsuario(tipo)}
-                          className="w-full text-left px-6 py-2.5 text-white hover:bg-white/10 transition-colors"
-                          style={{ fontFamily: "'Poppins', sans-serif" }}>
-                          {tipo}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-                {errors.tipoUsuario && <span className="text-red-400 text-xs">{errors.tipoUsuario}</span>}
-              </div>
-            )}
-
-            {/* Botón */}
-            <div className="mt-4">
-              {selectedRole === 'Jugador' || selectedRole === 'Capitan' ? (
-                <button
-                  onClick={handleConfigurarPerfil}
-                  className="border-2 border-white px-8 py-3 rounded text-white hover:bg-white/10 transition-colors text-base"
-                  style={{ fontFamily: "'Poppins', sans-serif" }}
-                >
-                  Configurar Perfil Deportivo
-                </button>
-              ) : (
-                <button
-                  onClick={handleCrearCuenta}
-                  className="border-2 border-white px-8 py-3 rounded text-white hover:bg-white/10 transition-colors text-base"
-                  style={{ fontFamily: "'Poppins', sans-serif" }}
-                >
-                  Crear Cuenta
-                </button>
-              )}
-            </div>
-
-          </div>
-        </div>
-      </div>
-
-      {/* ── FRANJA DERECHA blanca con robot abajo ── */}
-      <div className="hidden md:flex w-48 lg:w-56 flex-shrink-0 flex-col items-center justify-end pb-0 relative"
-        style={{ background: 'white' }}>
-        <img src={config.robotBottom} alt="Robot"
-          className="w-full object-contain" />
-      </div>
-
-      {/* ── MODAL — Relación con la Escuela ── */}
-      {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center"
-          style={{ background: 'rgba(0,0,0,0.45)' }}>
-          <div className="bg-[#e8e8e8] rounded-xl flex items-center gap-8 px-12 py-14 max-w-2xl w-full mx-6 min-h-[280px] relative overflow-visible">
-            <img src={robotPensativo} alt="Robot" className="w-auto object-contain"
-              style={{ position: 'absolute', left: '-30px', bottom: '-22px', height: '380px' }} />
-            <div style={{ minWidth: '160px' }} />
-            <div className="flex flex-col gap-6 w-full">
-              <p className="text-[#002652] text-xl uppercase font-bold leading-snug"
-                style={{ fontFamily: "'Anton SC', sans-serif" }}>
-                ¿Qué relación tienes con la escuela?
-              </p>
-              <div className="flex flex-col gap-3">
-                {['Familiar', 'Invitado'].map(opcion => {
-                  const isChecked = relacionOpcion === opcion;
-                  return (
-                    <label key={opcion} className="flex items-center gap-3 cursor-pointer"
-                      onClick={() => { setRelacionOpcion(opcion); setModalError(''); }}>
-                      <div className={`w-5 h-5 border-2 flex items-center justify-center rounded-sm transition-colors
-                        ${isChecked ? 'border-[#002652] bg-[#002652]/20' : 'border-gray-500'}`}>
-                        {isChecked && (
-                          <svg className="w-3.5 h-3.5 text-[#002652]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                          </svg>
-                        )}
-                      </div>
-                      <span className="text-[#002652] font-semibold" style={{ fontFamily: "'Oswald', sans-serif" }}>
-                        {opcion}
-                      </span>
-                    </label>
-                  );
-                })}
-              </div>
-              <textarea
-                placeholder="Escribe aquí la relación que tienes..."
-                value={relacion} onChange={e => { setRelacion(e.target.value); setModalError(''); }}
-                rows={3}
-                className="w-full px-4 py-3 rounded text-sm text-gray-700 placeholder-gray-400 outline-none resize-none"
-                style={{
-                  fontFamily: "'Inter', sans-serif",
-                  border: modalError && !relacion.trim() ? '2px solid #FF0000' : '2px solid transparent',
-                  background: 'rgba(255,255,255,0.9)', borderRadius: '6px',
-                }}
-                onFocus={e => e.target.style.border = '2px solid #4400FF'}
-                onBlur={e => {
-                  if (modalError && !relacion.trim()) e.target.style.border = '2px solid #FF0000';
-                  else e.target.style.border = '2px solid transparent';
-                }}
-              />
-              {modalError && (
-                <span className="text-red-500 text-xs -mt-4" style={{ fontFamily: "'Inter', sans-serif" }}>
-                  {modalError}
-                </span>
-              )}
-              <div className="flex gap-4">
-                <button onClick={handleEnviarModal}
-                  className="px-6 py-3 bg-[#002652] text-white rounded text-base hover:bg-[#001a3a] transition-colors"
-                  style={{ fontFamily: "'Poppins', sans-serif" }}>
-                  Enviar
-                </button>
-                <button onClick={() => { setShowModal(false); handleChange('tipoUsuario', ''); }}
-                  className="px-6 py-3 bg-[#001a3a] text-white rounded text-base hover:bg-[#002652] transition-colors"
-                  style={{ fontFamily: "'Poppins', sans-serif" }}>
-                  Cancelar
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ── MODAL — Confirmación ── */}
-      {showConfirmation && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center"
-          style={{ background: 'rgba(0,0,0,0.5)' }}>
-          <div className="bg-[#e8e8e8] rounded-xl p-8 max-w-md w-full mx-4 flex flex-col items-center text-center">
-            <img src={robotFestejo} alt="Robot festejo" className="w-40 h-auto object-contain mb-4" />
-            <h2 className="text-3xl text-[#002652] uppercase leading-tight mb-1"
-              style={{ fontFamily: "'Anton SC', sans-serif" }}>Felicidades</h2>
-            <h2 className="text-2xl text-[#002652] uppercase leading-tight mb-1"
-              style={{ fontFamily: "'Anton SC', sans-serif" }}>Has creado tu cuenta</h2>
-            <h2 className="text-xl uppercase leading-tight mb-6"
-              style={{ fontFamily: "'Anton SC', sans-serif", color: config.bg }}>
-              Revisa tu bandeja de entrada
-            </h2>
             <button
-              onClick={() => { setShowConfirmation(false); navigate('/iniciar-sesion'); }}
-              className="text-white px-10 py-2.5 rounded font-medium hover:opacity-90 transition-colors"
-              style={{ background: config.bg, fontFamily: "'Poppins', sans-serif" }}>
-              Continuar
+                onClick={handleIngresar}
+                disabled={loading}
+                className="w-full py-4 bg-[#001a3a] border border-white/30 text-white rounded text-lg hover:bg-[#003580] transition-colors mt-1 disabled:opacity-60 font-poppins"
+            >
+              {loading ? 'Ingresando...' : 'Ingresar'}
             </button>
+
+            <div className="flex items-center gap-4 my-1">
+              <div className="flex-1 h-px bg-white/20" />
+              <span className="text-white/50 text-xs font-inter">O ingresa con</span>
+              <div className="flex-1 h-px bg-white/20" />
+            </div>
+
+            <div className="flex gap-3">
+              <button onClick={handleGoogleLogin} className="flex-1 flex items-center justify-center gap-3 py-3 rounded bg-white/95 text-gray-700 text-sm font-medium border-2 border-transparent hover:border-[#4285F4] transition-all font-poppins">
+                <GoogleIcon /> Google
+              </button>
+              <button onClick={handleMicrosoftLogin} className="flex-1 flex items-center justify-center gap-3 py-3 rounded bg-white/95 text-gray-700 text-sm font-medium border-2 border-transparent opacity-65 cursor-not-allowed font-poppins">
+                <MicrosoftIcon /> Microsoft
+              </button>
+            </div>
+
+            {/* ── SECCIÓN DE ENLACES CORREGIDA ── */}
+            <div className="flex flex-col gap-4 mt-2">
+              <div className="flex justify-between items-center">
+                <button
+                    onClick={() => setShowModal(true)}
+                    className="text-white/70 text-sm underline hover:text-white transition-colors font-inter"
+                >
+                  ¿Olvidaste tu contraseña?
+                </button>
+                <button
+                    onClick={() => navigate('/seleccionar-rol')}
+                    className="text-white/70 text-sm underline hover:text-white transition-colors font-inter"
+                >
+                  ¿No tienes cuenta?
+                </button>
+              </div>
+
+              <div className="text-center pt-4">
+                            <span
+                                onClick={() => setShowHelpModal(true)}
+                                className="text-white/40 text-xs underline cursor-pointer hover:text-white/80 transition-colors font-inter"
+                            >
+                                ¿Necesitas ayuda o tienes comentarios?
+                            </span>
+              </div>
+            </div>
           </div>
         </div>
-      )}
-    </div>
+      </div>
   );
 }
