@@ -46,6 +46,13 @@ export const validarCedula = async (cedula) => {
   return await response.json();
 };
 
+// ── LLAVES / BRACKETS ──
+export const getBrackets = async () => {
+  const response = await authFetch('/brackets');
+  if (!response.ok) throw new Error('Error al cargar las llaves');
+  return await response.json();
+};
+
 // ── HELPER — obtener token guardado ──
 export const getToken = () => localStorage.getItem('token');
 
