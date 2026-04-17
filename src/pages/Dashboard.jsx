@@ -27,7 +27,8 @@ export function Sidebar({
   onLogout,
   unreadInvitations = 0,
   pendingCalendar = 0,
-  reglamentoPendiente = false
+  reglamentoPendiente = false,
+  extraNav = []
 }) {
   const navigate = useNavigate();
   const NAV = [
@@ -78,7 +79,7 @@ export function Sidebar({
       </div>
 
       <nav className="flex flex-col flex-1 py-4 gap-1">
-        {NAV.map(({ icon, label, key, path, badge, alert }) => {
+        {[...extraNav, ...NAV].map(({ icon, label, key, path, badge, alert }) => {
           const isActive = active === key;
           return (
             <button key={key} onClick={() => navigate(path)}
