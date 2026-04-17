@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 import logoTCF2 from '../assets/logos/LOGO FUTBOLL F Letras blancas.png';
 
@@ -31,6 +31,8 @@ const DEFAULT_COLOR = '#002652';
 
 export default function Home() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const isFromRegistration = location.state?.fromRegistration || false;
 
   const [hoveredRole, setHoveredRole] = useState(null);
   const [currentImage, setCurrentImage] = useState(0);
@@ -96,7 +98,7 @@ export default function Home() {
                 className="flex items-center gap-4 cursor-pointer group"
                 onMouseEnter={() => setHoveredRole(role)}
                 onClick={() =>
-                  navigate('/registro', {
+                  navigate('/register', {
                     state: { role: role.name },
                   })
                 }

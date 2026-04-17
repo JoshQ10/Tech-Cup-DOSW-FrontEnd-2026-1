@@ -5,6 +5,32 @@ const getParamFromSearchOrHash = (key, searchParams, hashParams) => {
   return searchParams.get(key) || hashParams.get(key) || '';
 };
 
+const saveSession = async (token, refreshToken) => {
+  localStorage.setItem('token', token);
+  localStorage.setItem('techcup_token', token);
+
+  if (refreshToken) {
+    localStorage.setItem('refreshToken', refreshToken);
+    localStorage.setItem('techcup_refresh_token', refreshToken);
+  }
+
+  try {
+    const response = await fetch('/api/profile', {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.ok) {
+      const profile = await response.json();
+      localStorage.setItem('techcup_user', JSON.stringify(profile));
+    }
+  } catch {
+    // Sin perfil no se bloquea la sesión, solo se omite cache de usuario.
+  }
+};
+
 export default function OAuth2Callback() {
   const navigate = useNavigate();
   const [status, setStatus] = useState('loading');
@@ -32,36 +58,39 @@ export default function OAuth2Callback() {
 
     let timeoutId;
 
-    if (errorMessage) {
-      setStatus('error');
-      setMessage('No fue posible completar el ingreso con Google. Intenta de nuevo.');
+    const run = async () => {
+      if (errorMessage) {
+        setStatus('error');
+        setMessage('No fue posible completar el ingreso con Google. Intenta de nuevo.');
+        timeoutId = setTimeout(() => {
+          navigate('/login', { replace: true });
+        }, 1800);
+        return;
+      }
+
+      if (!token) {
+        setStatus('error');
+        setMessage('No se recibio un token de autenticacion. Intenta nuevamente.');
+        timeoutId = setTimeout(() => {
+          navigate('/login', { replace: true });
+        }, 1800);
+        return;
+      }
+
+      await saveSession(token, refreshToken);
+
+      setStatus('success');
+      setMessage('Ingreso exitoso. Redirigiendo al dashboard...');
       timeoutId = setTimeout(() => {
-        navigate('/iniciar-sesion', { replace: true });
-      }, 1800);
-      return () => clearTimeout(timeoutId);
-    }
+        window.location.replace('/dashboard');
+      }, 800);
+    };
 
-    if (!token) {
-      setStatus('error');
-      setMessage('No se recibio un token de autenticacion. Intenta nuevamente.');
-      timeoutId = setTimeout(() => {
-        navigate('/iniciar-sesion', { replace: true });
-      }, 1800);
-      return () => clearTimeout(timeoutId);
-    }
+    void run();
 
-    localStorage.setItem('token', token);
-    if (refreshToken) {
-      localStorage.setItem('refreshToken', refreshToken);
-    }
-
-    setStatus('success');
-    setMessage('Ingreso exitoso. Redirigiendo al dashboard...');
-    timeoutId = setTimeout(() => {
-      navigate('/dashboard', { replace: true });
-    }, 800);
-
-    return () => clearTimeout(timeoutId);
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+    };
   }, [navigate]);
 
   return (
@@ -83,4 +112,3 @@ export default function OAuth2Callback() {
     </div>
   );
 }
-
